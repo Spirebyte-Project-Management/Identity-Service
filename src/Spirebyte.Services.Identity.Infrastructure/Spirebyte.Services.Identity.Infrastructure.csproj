@@ -5,6 +5,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Convey" Version="0.4.349" />
+    <PackageReference Include="Convey.Configurations.Vault" Version="0.4.226" />
+    <PackageReference Include="Convey.CQRS.Commands" Version="0.4.349" />
+    <PackageReference Include="Convey.CQRS.Queries" Version="0.4.349" />
+    <PackageReference Include="Convey.Discovery.Consul" Version="0.4.349" />
+    <PackageReference Include="Convey.LoadBalancing.Fabio" Version="0.4.349" />
+    <PackageReference Include="Convey.Logging.CQRS" Version="0.4.349" />
+    <PackageReference Include="Convey.MessageBrokers" Version="0.4.349" />
+    <PackageReference Include="Convey.MessageBrokers.CQRS" Version="0.4.349" />
+    <PackageReference Include="Convey.MessageBrokers.Outbox" Version="0.4.349" />
+    <PackageReference Include="Convey.MessageBrokers.Outbox.Mongo" Version="0.4.349" />
+    <PackageReference Include="Convey.MessageBrokers.RabbitMQ" Version="0.4.349" />
+    <PackageReference Include="Convey.Persistence.MongoDB" Version="0.4.349" />
+    <PackageReference Include="Convey.Persistence.Redis" Version="0.4.349" />
+    <PackageReference Include="Convey.Security" Version="0.4.349" />
+    <PackageReference Include="Convey.Tracing.Jaeger" Version="0.4.349" />
+    <PackageReference Include="Convey.Tracing.Jaeger.RabbitMQ" Version="0.4.349" />
+    <PackageReference Include="Convey.WebApi.CQRS" Version="0.4.349" />
+    <PackageReference Include="Convey.WebApi.Swagger" Version="0.4.349" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Spirebyte.Services.Identity.Application\Spirebyte.Services.Identity.Application.csproj" />
   </ItemGroup>
 

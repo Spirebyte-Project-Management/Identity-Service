@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Convey.CQRS.Commands" Version="0.4.349" />
+    <PackageReference Include="Convey.CQRS.Events" Version="0.4.349" />
+    <PackageReference Include="Convey.CQRS.Queries" Version="0.4.349" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Spirebyte.Services.Identity.Core\Spirebyte.Services.Identity.Core.csproj" />
   </ItemGroup>
 
