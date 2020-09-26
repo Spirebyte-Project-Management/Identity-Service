@@ -1,6 +1,8 @@
 ﻿@api = http://localhost:64698
 
-### At first, create an account POST {{api}}/sign-up Content-Type: application/json
+### At first, create an account
+POST {{api}}/sign-up HTTP/1.1
+content-type: application/json
 
 {
 "email": "spirebyte-user1@mailinator.com", "password": "secret", "role": "user"

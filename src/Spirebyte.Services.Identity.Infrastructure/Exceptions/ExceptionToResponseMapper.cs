@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using Convey;
 using Convey.WebApi.Exceptions;
+using Spirebyte.Services.Identity.Application.Exceptions.Base;
 using Spirebyte.Services.Identity.Core.Exceptions.Base;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Exceptions
@@ -17,6 +18,8 @@ namespace Spirebyte.Services.Identity.Infrastructure.Exceptions
             => exception switch
             {
                 DomainException ex => new ExceptionResponse(new { code = GetCode(ex), reason = ex.Message },
+                    HttpStatusCode.BadRequest),
+                AppException ex => new ExceptionResponse(new { code = GetCode(ex), reason = ex.Message },
                     HttpStatusCode.BadRequest),
                 _ => new ExceptionResponse(new { code = "error", reason = "There was an error." },
                     HttpStatusCode.BadRequest)
@@ -33,6 +36,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Exceptions
             var exceptionCode = exception switch
             {
                 DomainException domainException when !string.IsNullOrWhiteSpace(domainException.Code) => domainException.Code,
+                AppException appException when !string.IsNullOrWhiteSpace(appException.Code) => appException.Code,
                 _ => exception.GetType().Name.Underscore().Replace("_exception", string.Empty)
             };
 

@@ -1,16 +1,19 @@
 using System.Threading.Tasks;
 using Convey;
-using Convey.Configurations.Vault;
 using Convey.Logging;
+using Convey.Secrets.Vault;
 using Convey.Types;
 using Convey.WebApi;
 using Convey.WebApi.CQRS;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Identity.Application;
 using Spirebyte.Services.Identity.Application.Commands;
+using Spirebyte.Services.Identity.Application.DTO;
+using Spirebyte.Services.Identity.Application.Queries;
 using Spirebyte.Services.Identity.Infrastructure;
 
 namespace Spirebyte.Services.Identity.API
@@ -27,10 +30,10 @@ namespace Spirebyte.Services.Identity.API
                     .Build())
                 .Configure(app => app
                     .UseInfrastructure()
+                    .UsePingEndpoint()
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
-                        .Get("ping", ctx => ctx.Response.WriteAsync("pong"))
-                        .Get<GetUser>()
+                        .Get<GetUser, UserDto>("users/{userId}")
                         .Post<SignUp>("sign-up", afterDispatch: (cmd, ctx) => ctx.Response.Created("identity/me"))
                     ))
                 .UseLogging()

@@ -24,14 +24,14 @@ namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers
                 Permissions = entity.Permissions ?? Enumerable.Empty<string>()
             };
 
-        public static UserDto AsDto(this UserDocument document)
+        public static UserDto AsDto(this User entity)
             => new UserDto
             {
-                Id = document.Id,
-                Email = document.Email,
-                Role = document.Role,
-                CreatedAt = document.CreatedAt,
-                Permissions = document.Permissions ?? Enumerable.Empty<string>()
+                Id = entity.Id,
+                Email = entity.Email,
+                Role = entity.Role,
+                CreatedAt = entity.CreatedAt,
+                Permissions = entity.Permissions ?? Enumerable.Empty<string>()
             };
     }
 }

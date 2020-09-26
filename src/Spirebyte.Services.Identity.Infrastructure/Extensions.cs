@@ -3,29 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Convey;
+using Convey.Auth;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
 using Convey.Discovery.Consul;
 using Convey.Docs.Swagger;
+using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
 using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
+using Convey.Metrics.AppMetrics;
 using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
 using Convey.Security;
 using Convey.Tracing.Jaeger;
 using Convey.Tracing.Jaeger.RabbitMQ;
 using Convey.WebApi;
+using Convey.WebApi.CQRS;
 using Convey.WebApi.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Spirebyte.Services.Identity.Application;
 using Spirebyte.Services.Identity.Application.Commands;
 using Spirebyte.Services.Identity.Application.Services;
 using Spirebyte.Services.Identity.Core.Repositories;
@@ -48,6 +53,8 @@ namespace Spirebyte.Services.Identity.Infrastructure
             builder.Services.AddSingleton<IPasswordHasher<IPasswordService>, PasswordHasher<IPasswordService>>();
             builder.Services.AddTransient<IMessageBroker, MessageBroker>();
             builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
+            builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
             builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
             builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
@@ -55,6 +62,8 @@ namespace Spirebyte.Services.Identity.Infrastructure
                 .AddErrorHandler<ExceptionToResponseMapper>()
                 .AddQueryHandlers()
                 .AddInMemoryQueryDispatcher()
+                .AddJwt()
+                .AddHttpClient()
                 .AddConsul()
                 .AddFabio()
                 .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
@@ -73,7 +82,10 @@ namespace Spirebyte.Services.Identity.Infrastructure
                 .UseSwaggerDocs()
                 .UseJaeger()
                 .UseConvey()
+                .UseAccessTokenValidator()
                 .UseMongo()
+                .UsePublicContracts<ContractAttribute>()
+                .UseAuthentication()
                 .UseRabbitMq()
                 .SubscribeCommand<SignUp>();
 
