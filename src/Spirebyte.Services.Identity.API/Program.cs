@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Convey;
 using Convey.Logging;
 using Convey.Secrets.Vault;
@@ -15,6 +14,7 @@ using Spirebyte.Services.Identity.Application.Commands;
 using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Application.Queries;
 using Spirebyte.Services.Identity.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.API
 {
