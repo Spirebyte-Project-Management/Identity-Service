@@ -10,17 +10,24 @@ namespace Spirebyte.Services.Identity.Core.Entities
     public class User : AggregateRoot
     {
         public string Email { get; private set; }
+        public string Fullname { get; private set; }
+        public string Pic { get; private set; }
         public string Role { get; private set; }
         public string Password { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public IEnumerable<string> Permissions { get; private set; }
 
-        public User(Guid id, string email, string password, string role, DateTime createdAt,
+        public User(Guid id, string email, string fullname, string pic, string password, string role, DateTime createdAt,
             IEnumerable<string> permissions = null)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
                 throw new InvalidEmailException(email);
+            }
+
+            if (string.IsNullOrWhiteSpace(fullname))
+            {
+                throw new InvalidFullnameException(fullname);
             }
 
             if (string.IsNullOrWhiteSpace(password))
@@ -35,6 +42,8 @@ namespace Spirebyte.Services.Identity.Core.Entities
 
             Id = id;
             Email = email.ToLowerInvariant();
+            Fullname = fullname;
+            Pic = pic;
             Password = password;
             Role = role.ToLowerInvariant();
             CreatedAt = createdAt;

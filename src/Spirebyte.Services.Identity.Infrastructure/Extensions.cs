@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Convey;
 using Convey.Auth;
 using Convey.CQRS.Commands;
@@ -25,6 +26,8 @@ using Convey.Tracing.Jaeger.RabbitMQ;
 using Convey.WebApi;
 using Convey.WebApi.CQRS;
 using Convey.WebApi.Swagger;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +35,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Spirebyte.Services.Identity.Application;
 using Spirebyte.Services.Identity.Application.Commands;
+using Spirebyte.Services.Identity.Application.Requests;
 using Spirebyte.Services.Identity.Application.Services;
+using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Repositories;
 using Spirebyte.Services.Identity.Infrastructure.Auth;
 using Spirebyte.Services.Identity.Infrastructure.Contexts;
@@ -49,10 +54,15 @@ namespace Spirebyte.Services.Identity.Infrastructure
     {
         public static IConveyBuilder AddInfrastructure(this IConveyBuilder builder)
         {
+            builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
+
+            builder.Services.AddSingleton<IPasswordService, PasswordService>();
             builder.Services.AddSingleton<IPasswordService, PasswordService>();
             builder.Services.AddSingleton<IPasswordHasher<IPasswordService>, PasswordHasher<IPasswordService>>();
+            builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();
+            builder.Services.AddSingleton<IRng, Rng>();
             builder.Services.AddTransient<IMessageBroker, MessageBroker>();
-            builder.Services.AddTransient<IUserRepository, UserRepository>();
+            builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>(); builder.Services.AddTransient<IUserRepository, UserRepository>();
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
             builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
@@ -72,6 +82,7 @@ namespace Spirebyte.Services.Identity.Infrastructure
                 .AddMongo()
                 .AddRedis()
                 .AddJaeger()
+                .AddMongoRepository<RefreshTokenDocument, Guid>("refreshTokens")
                 .AddMongoRepository<UserDocument, Guid>("users")
                 .AddWebApiSwaggerDocs()
                 .AddSecurity();
@@ -90,6 +101,13 @@ namespace Spirebyte.Services.Identity.Infrastructure
                 .SubscribeCommand<SignUp>();
 
             return app;
+        }
+
+        public static async Task<Guid> AuthenticateUsingJwtAsync(this HttpContext context)
+        {
+            var authentication = await context.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+
+            return authentication.Succeeded ? Guid.Parse(authentication.Principal.Identity.Name) : Guid.Empty;
         }
 
         internal static CorrelationContext GetCorrelationContext(this IHttpContextAccessor accessor)

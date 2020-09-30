@@ -15,6 +15,7 @@ using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Application.Queries;
 using Spirebyte.Services.Identity.Infrastructure;
 using System.Threading.Tasks;
+using Spirebyte.Services.Identity.Application.Requests;
 
 namespace Spirebyte.Services.Identity.API
 {
@@ -31,9 +32,14 @@ namespace Spirebyte.Services.Identity.API
                 .Configure(app => app
                     .UseInfrastructure()
                     .UsePingEndpoint()
+                    .UseExtendedDispatcherEndpoints(endpoints => endpoints
+                        .Post<SignIn, AuthDto>("sign-in")
+                    )
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
                         .Get<GetUser, UserDto>("users/{userId}")
+                        .Get<GetUser, UserDto>("me",
+                            beforeDispatch: async (cmd, ctx) => cmd.UserId = await ctx.AuthenticateUsingJwtAsync())
                         .Post<SignUp>("sign-up", afterDispatch: (cmd, ctx) => ctx.Response.Created("identity/me"))
                     ))
                 .UseLogging()

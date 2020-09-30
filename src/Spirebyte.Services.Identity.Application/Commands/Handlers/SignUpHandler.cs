@@ -52,7 +52,7 @@ namespace Spirebyte.Services.Identity.Application.Commands.Handlers
 
             var role = string.IsNullOrWhiteSpace(command.Role) ? "user" : command.Role.ToLowerInvariant();
             var password = _passwordService.Hash(command.Password);
-            user = new User(command.UserId, command.Email, password, role, DateTime.UtcNow, command.Permissions);
+            user = new User(command.UserId, command.Email, command.Fullname, command.Pic, password, role, DateTime.UtcNow, command.Permissions);
             await _userRepository.AddAsync(user);
 
             _logger.LogInformation($"Created an account for the user with id: {user.Id}.");
