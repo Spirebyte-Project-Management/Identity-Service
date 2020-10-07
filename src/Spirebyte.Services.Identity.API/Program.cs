@@ -41,6 +41,7 @@ namespace Spirebyte.Services.Identity.API
                         .Get<GetUser, UserDto>("me",
                             beforeDispatch: async (cmd, ctx) => cmd.UserId = await ctx.AuthenticateUsingJwtAsync())
                         .Post<SignUp>("sign-up", afterDispatch: (cmd, ctx) => ctx.Response.Created("identity/me"))
+                        .Put<UpdateUser>("me")
                     ))
                 .UseLogging()
                 .UseVault()

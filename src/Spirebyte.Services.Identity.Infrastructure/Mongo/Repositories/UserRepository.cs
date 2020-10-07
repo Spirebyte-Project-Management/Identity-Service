@@ -34,5 +34,6 @@ namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Repositories
         }
 
         public Task AddAsync(User user) => _repository.AddAsync(user.AsDocument());
+        public Task UpdateAsync(User user) => _repository.UpdateAsync(user.AsDocument());
     }
 }
