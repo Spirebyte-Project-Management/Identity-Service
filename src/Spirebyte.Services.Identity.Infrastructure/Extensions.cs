@@ -33,6 +33,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Partytitan.Convey.WindowsAzure.Blob;
 using Spirebyte.Services.Identity.Application;
 using Spirebyte.Services.Identity.Application.Commands;
 using Spirebyte.Services.Identity.Application.Requests;
@@ -85,6 +86,7 @@ namespace Spirebyte.Services.Identity.Infrastructure
                 .AddMongoRepository<RefreshTokenDocument, Guid>("refreshTokens")
                 .AddMongoRepository<UserDocument, Guid>("users")
                 .AddWebApiSwaggerDocs()
+                .AddAzureBlobStorage()
                 .AddSecurity();
         }
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
