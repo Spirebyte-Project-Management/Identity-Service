@@ -13,9 +13,9 @@ namespace Spirebyte.Services.Identity.Application.Commands
         public string Fullname { get; }
         public string Pic { get; }
 
-        public IFormFile File { get; }
+        public string File { get; }
 
-        public UpdateUser(Guid userId, string fullname, string pic, IFormFile file)
+        public UpdateUser(Guid userId, string fullname, string pic, string file)
         {
             UserId = userId == Guid.Empty ? Guid.NewGuid() : userId;
             Fullname = fullname;
