@@ -10,6 +10,7 @@ using Spirebyte.Services.Identity.Core.Exceptions;
 using Spirebyte.Services.Identity.Core.Repositories;
 using System;
 using System.Threading.Tasks;
+using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Unit.Application.Handlers

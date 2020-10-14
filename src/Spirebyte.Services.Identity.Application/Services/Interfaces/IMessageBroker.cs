@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Convey.CQRS.Events;
 
-namespace Spirebyte.Services.Identity.Application.Services
+namespace Spirebyte.Services.Identity.Application.Services.Interfaces
 {
     public interface IMessageBroker
     {

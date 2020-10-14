@@ -17,7 +17,8 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var fullname = "fullname";
             var password = "secret";
             var role = Role.User;
-            var user = new User(id, email, fullname, "test.nl/image", password, role, DateTime.UtcNow, new string[] { });
+            var securityStamp = Guid.NewGuid().ToString();
+            var user = new User(id, email, fullname, "test.nl/image", password, role, securityStamp, DateTime.UtcNow, new string[] { });
 
             user.Should().NotBeNull();
             user.Id.Should().Be(id);
@@ -35,8 +36,9 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var fullname = "fullname";
             var password = "secret";
             var role = Role.User;
+            var securityStamp = Guid.NewGuid().ToString();
 
-            Action act = () => new User(id, email, fullname, "test.nl/image", password, role, DateTime.UtcNow, new string[] { });
+            Action act = () => new User(id, email, fullname, "test.nl/image", password, role, securityStamp, DateTime.UtcNow, new string[] { });
             act.Should().Throw<InvalidEmailException>();
         }
 
@@ -48,8 +50,9 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var fullname = "";
             var password = "secret";
             var role = Role.User;
+            var securityStamp = Guid.NewGuid().ToString();
 
-            Action act = () => new User(id, email, fullname, "test.nl/image", password, role, DateTime.UtcNow, new string[] { });
+            Action act = () => new User(id, email, fullname, "test.nl/image", password, role, securityStamp, DateTime.UtcNow, new string[] { });
             act.Should().Throw<InvalidFullnameException>();
         }
 
@@ -61,8 +64,9 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var fullname = "fullname";
             var password = "";
             var role = Role.User;
+            var securityStamp = Guid.NewGuid().ToString();
 
-            Action act = () => new User(id, email, fullname, "test.nl/image", password, role, DateTime.UtcNow, new string[] { });
+            Action act = () => new User(id, email, fullname, "test.nl/image", password, role, securityStamp, DateTime.UtcNow, new string[] { });
             act.Should().Throw<InvalidPasswordException>();
         }
 
@@ -74,8 +78,9 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var fullname = "fullname";
             var password = "secret";
             var role = "";
+            var securityStamp = Guid.NewGuid().ToString();
 
-            Action act = () => new User(id, email, fullname, "test.nl/image", password, role, DateTime.UtcNow, new string[] { });
+            Action act = () => new User(id, email, fullname, "test.nl/image", password, role, securityStamp, DateTime.UtcNow, new string[] { });
             act.Should().Throw<InvalidRoleException>();
         }
     }

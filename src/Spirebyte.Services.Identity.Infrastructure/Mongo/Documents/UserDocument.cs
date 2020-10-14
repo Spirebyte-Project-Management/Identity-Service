@@ -12,6 +12,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Documents
         public string Pic { get; set; }
         public string Role { get; set; }
         public string Password { get; set; }
+        public string SecurityStamp { get; set; }
         public DateTime CreatedAt { get; set; }
         public IEnumerable<string> Permissions { get; set; }
     }

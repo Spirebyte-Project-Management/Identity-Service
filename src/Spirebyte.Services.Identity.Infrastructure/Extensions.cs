@@ -58,7 +58,7 @@ namespace Spirebyte.Services.Identity.Infrastructure
             builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
 
             builder.Services.AddSingleton<IPasswordService, PasswordService>();
-            builder.Services.AddSingleton<IPasswordService, PasswordService>();
+            builder.Services.AddSingleton<IDataProtectorTokenProvider, DataProtectorTokenProvider>();
             builder.Services.AddSingleton<IPasswordHasher<IPasswordService>, PasswordHasher<IPasswordService>>();
             builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();
             builder.Services.AddSingleton<IRng, Rng>();
@@ -66,6 +66,7 @@ namespace Spirebyte.Services.Identity.Infrastructure
             builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>(); builder.Services.AddTransient<IUserRepository, UserRepository>();
             builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
             builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
+            builder.Services.AddDataProtection();
             builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
             builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
@@ -100,7 +101,8 @@ namespace Spirebyte.Services.Identity.Infrastructure
                 .UsePublicContracts<ContractAttribute>()
                 .UseAuthentication()
                 .UseRabbitMq()
-                .SubscribeCommand<SignUp>();
+                .SubscribeCommand<SignUp>()
+                .SubscribeCommand<ResetPassword>();
 
             return app;
         }

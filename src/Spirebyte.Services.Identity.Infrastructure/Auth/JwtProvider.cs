@@ -4,6 +4,7 @@ using System.Text;
 using Convey.Auth;
 using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Application.Services;
+using Spirebyte.Services.Identity.Application.Services.Interfaces;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Auth
 {

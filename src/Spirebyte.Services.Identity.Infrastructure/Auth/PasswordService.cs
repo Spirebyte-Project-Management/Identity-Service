@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Spirebyte.Services.Identity.Application.Services;
+using Spirebyte.Services.Identity.Application.Services.Interfaces;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Auth
 {
