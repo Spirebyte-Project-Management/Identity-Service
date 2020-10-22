@@ -51,7 +51,9 @@ namespace Spirebyte.Services.Identity.Application.Commands.Handlers
                 picUrl = uri.OriginalString;
             }
 
-            user = new User(user.Id, user.Email, command.Fullname, picUrl, user.Password, user.Role, user.SecurityStamp, user.CreatedAt, user.Permissions);
+            string securityStamp = Guid.Empty.ToString();
+
+            user = new User(user.Id, user.Email, command.Fullname, picUrl, user.Password, user.Role, securityStamp, user.CreatedAt, user.Permissions);
             await _userRepository.UpdateAsync(user);
 
             _logger.LogInformation($"Updated account for the user with id: {user.Id}.");

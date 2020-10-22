@@ -60,6 +60,7 @@ namespace Spirebyte.Services.Identity.Core.Entities
             }
 
             Password = password;
+            SecurityStamp = Guid.Empty.ToString();
         }
     }
 }

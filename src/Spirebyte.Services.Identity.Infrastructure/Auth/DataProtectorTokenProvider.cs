@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Convey.Auth;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 
@@ -37,13 +38,14 @@ namespace Spirebyte.Services.Identity.Infrastructure.Auth
                 writer.Write(securityStamp ?? "");
             }
             var protectedBytes = Protector.Protect(ms.ToArray());
-            return Convert.ToBase64String(protectedBytes);
+            return Base64UrlEncoder.Encode(protectedBytes);
         }
         public virtual async Task<bool> ValidateAsync(string purpose, string token, AggregateId userId, string securityStamp)
         {
             try
             {
-                var unprotectedData = Protector.Unprotect(Convert.FromBase64String(token));
+                var bytes = Base64UrlEncoder.DecodeBytes(token);
+                var unprotectedData = Protector.Unprotect(bytes);
                 var ms = new MemoryStream(unprotectedData);
                 using var reader = ms.CreateReader();
 
