@@ -48,7 +48,7 @@ namespace Spirebyte.Services.Identity.Core.Entities
             Password = password;
             SecurityStamp = securityStamp ?? Guid.NewGuid().ToString();
             Role = role.ToLowerInvariant();
-            CreatedAt = createdAt;
+            CreatedAt = createdAt == DateTime.MinValue ? DateTime.Now : createdAt;
             Permissions = permissions ?? Enumerable.Empty<string>();
         }
 
