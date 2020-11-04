@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Convey;
 using Convey.Logging;
 using Convey.Secrets.Vault;
@@ -37,6 +38,7 @@ namespace Spirebyte.Services.Identity.API
                     )
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
+                        .Get<GetUsersByIds, IEnumerable<UserDto>>("users/withids")
                         .Get<GetUser, UserDto>("users/{userId}")
                         .Get<GetUser, UserDto>("me",
                             beforeDispatch: async (cmd, ctx) => cmd.UserId = await ctx.AuthenticateUsingJwtAsync())
