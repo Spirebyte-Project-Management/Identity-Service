@@ -102,6 +102,7 @@ namespace Spirebyte.Services.Identity.Infrastructure
                 .UseAuthentication()
                 .UseRabbitMq()
                 .SubscribeCommand<SignUp>()
+                .SubscribeCommand<UpdateUser>()
                 .SubscribeCommand<ResetPassword>();
 
             return app;
