@@ -19,6 +19,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers
                 Id = entity.Id,
                 Email = entity.Email,
                 Fullname = entity.Fullname,
+                NORMALIZED_FULLNAME = entity.NORMALIZED_FULLNAME,
                 Pic = entity.Pic,
                 Password = entity.Password,
                 SecurityStamp = entity.SecurityStamp,

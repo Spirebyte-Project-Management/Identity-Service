@@ -11,6 +11,7 @@ namespace Spirebyte.Services.Identity.Core.Entities
     {
         public string Email { get; private set; }
         public string Fullname { get; private set; }
+        public string NORMALIZED_FULLNAME { get; private set; }
         public string Pic { get; private set; }
         public string Role { get; private set; }
         public string SecurityStamp { get; private set; }
@@ -44,6 +45,7 @@ namespace Spirebyte.Services.Identity.Core.Entities
             Id = id;
             Email = email.ToLowerInvariant();
             Fullname = fullname;
+            NORMALIZED_FULLNAME = fullname.ToUpperInvariant();
             Pic = pic;
             Password = password;
             SecurityStamp = securityStamp ?? Guid.NewGuid().ToString();

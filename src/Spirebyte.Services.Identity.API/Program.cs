@@ -39,6 +39,7 @@ namespace Spirebyte.Services.Identity.API
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
                         .Get<GetUsersByIds, IEnumerable<UserDto>>("users/withids")
+                        .Get<GetUsers, IEnumerable<UserDto>>("users")
                         .Get<GetUser, UserDto>("users/{userId}")
                         .Get<GetUser, UserDto>("me",
                             beforeDispatch: async (cmd, ctx) => cmd.UserId = await ctx.AuthenticateUsingJwtAsync())

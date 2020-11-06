@@ -37,7 +37,7 @@ namespace Spirebyte.Services.Identity.Application.Commands.Handlers
                 throw new UserNotFoundException(command.UserId);
             }
 
-            string picUrl = command.Pic;
+            string picUrl = user.Pic;
 
             if (!string.IsNullOrWhiteSpace(command.File))
             {
