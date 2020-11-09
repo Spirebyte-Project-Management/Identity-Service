@@ -10,5 +10,10 @@ namespace Spirebyte.Services.Identity.Application.Queries
 
     {
         public string SearchTerm { get; set; }
+
+        public GetUsers(string searchTerm = null)
+        {
+            SearchTerm = searchTerm;
+        }
     }
 }

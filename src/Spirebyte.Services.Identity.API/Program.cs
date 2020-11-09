@@ -23,7 +23,12 @@ namespace Spirebyte.Services.Identity.API
     public class Program
     {
         public static async Task Main(string[] args)
-            => await WebHost.CreateDefaultBuilder(args)
+            => await CreateWebHostBuilder(args)
+                .Build()
+                .RunAsync();
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+            => WebHost.CreateDefaultBuilder(args)
                 .ConfigureServices(services => services
                     .AddConvey()
                     .AddWebApi()
@@ -50,8 +55,6 @@ namespace Spirebyte.Services.Identity.API
                             beforeDispatch: async (cmd, ctx) => cmd.UserId = await ctx.AuthenticateUsingJwtAsync())
                     ))
                 .UseLogging()
-                .UseVault()
-                .Build()
-                .RunAsync();
+                .UseVault();
     }
 }

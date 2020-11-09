@@ -9,5 +9,10 @@ namespace Spirebyte.Services.Identity.Application.Queries
     public class GetUsersByIds : IQuery<IEnumerable<UserDto>>
     {
         public Guid[] UserIds { get; set; }
+
+        public GetUsersByIds(Guid[] userIds)
+        {
+            UserIds = userIds;
+        }
     }
 }

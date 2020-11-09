@@ -12,5 +12,12 @@ namespace Spirebyte.Services.Identity.Application.Commands
         public Guid UserId;
         public string Password { get; set; }
         public string Token { get; set; }
+
+        public ResetPassword(Guid userId, string password, string token)
+        {
+            UserId = userId;
+            Password = password;
+            Token = token;
+        }
     }
 }

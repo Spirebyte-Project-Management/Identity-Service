@@ -9,5 +9,10 @@ namespace Spirebyte.Services.Identity.Application.Commands
     public class ForgotPassword : ICommand
     {
         public string Email { get; set; }
+
+        public ForgotPassword(string email)
+        {
+            Email = email;
+        }
     }
 }

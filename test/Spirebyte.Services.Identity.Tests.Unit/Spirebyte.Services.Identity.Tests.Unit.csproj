@@ -16,7 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Spirebyte.Services.Identity.Application\Spirebyte.Services.Identity.Application.csproj" />
+    <ProjectReference
+      Include="..\..\src\Spirebyte.Services.Identity.Application\Spirebyte.Services.Identity.Application.csproj" />
     <ProjectReference Include="..\..\src\Spirebyte.Services.Identity.Core\Spirebyte.Services.Identity.Core.csproj" />
   </ItemGroup>
 
