@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Convey.WebApi.Requests;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Spirebyte.Services.Identity.API;
+using Spirebyte.Services.Identity.Application.Commands;
 using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Application.Requests;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
@@ -16,17 +21,19 @@ using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
 using Xunit;
 
-namespace Spirebyte.Services.Identity.Tests.Integration.Requests
+namespace Spirebyte.Services.Identity.Tests.EndToEnd.Requests
 {
     [Collection("Spirebyte collection")]
     public class SignInTests : IDisposable
     {
+        private Task<HttpResponseMessage> Act(SignIn request)
+            => _httpClient.PostAsync("sign-in", GetContent(request));
+
         public SignInTests(SpirebyteApplicationFactory<Program> factory)
         {
-            _rabbitMqFixture = new RabbitMqFixture();
             _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
             factory.Server.AllowSynchronousIO = true;
-            _requestHandler = factory.Services.GetRequiredService<IRequestHandler<SignIn, AuthDto>>();
+            _httpClient = factory.CreateClient();
             _passwordService = factory.Services.GetRequiredService<IPasswordService>();
         }
 
@@ -35,14 +42,15 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
             _mongoDbFixture.Dispose();
         }
 
-        private const string Exchange = "identity";
+        private static StringContent GetContent(object value)
+            => new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
+
+        private readonly HttpClient _httpClient;
         private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
-        private readonly RabbitMqFixture _rabbitMqFixture;
-        private readonly IRequestHandler<SignIn, AuthDto> _requestHandler;
         private readonly IPasswordService _passwordService;
 
         [Fact]
-        public async Task signin_request_should_sign_in_user_with_correct_username_and_password()
+        public async Task signin_endpoint_should_return_http_status_code_ok_and_valid_auth_dto()
         {
             var id = new AggregateId();
             var email = "test@mail.com";
@@ -58,22 +66,19 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
 
             var request = new SignIn(email, password);
 
-            var requestResult = _requestHandler
-                .Awaiting(c => c.HandleAsync(request));
+            var response = await Act(request);
 
-            requestResult.Should().NotThrow();
+            response.Should().NotBeNull();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var result = await requestResult();
-            result.Should().NotBeNull();
-            result.Role.Should().Be(role);
-            result.AccessToken.Should().NotBeNullOrEmpty();
-            result.Expires.Should().BeGreaterThan(0);
-            result.RefreshToken.Should().NotBeNullOrEmpty();
+            var content = await response.Content.ReadAsStringAsync();
+
+            content.Should().NotBeEmpty();
         }
 
 
         [Fact]
-        public async Task signup_request_fails_when_false_email_is_sent()
+        public async Task signup_endpoint_should_return_error_when_email_is_invalid()
         {
             var id = new AggregateId();
             var email = "test@mail";
@@ -89,15 +94,19 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
 
             var request = new SignIn(email, password);
 
-            // Check if exception is thrown
-            var requestResult = _requestHandler
-                .Awaiting(c => c.HandleAsync(request));
+            var response = await Act(request);
 
-            requestResult.Should().Throw<InvalidEmailException>();
+            response.Should().NotBeNull();
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var exception = new InvalidEmailException(email);
+            content.Should().Contain(exception.Code);
         }
 
         [Fact]
-        public async Task signup_request_fails_when_password_is_incorrect()
+        public async Task signup_endpoint_should_return_error_when_password_is_incorrect()
         {
             var id = new AggregateId();
             var email = "test@mail.com";
@@ -114,15 +123,19 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
 
             var request = new SignIn(email, wrongPassword);
 
-            // Check if exception is thrown
-            var requestResult = _requestHandler
-                .Awaiting(c => c.HandleAsync(request));
+            var response = await Act(request);
 
-            requestResult.Should().Throw<InvalidCredentialsException>();
+            response.Should().NotBeNull();
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var exception = new InvalidCredentialsException(email);
+            content.Should().Contain(exception.Code);
         }
 
         [Fact]
-        public async Task signup_request_fails_when_user_does_not_exist()
+        public async Task signup_endpoint_should_return_error_when_user_does_not_exist()
         {
             var email = "test@mail.com";
             var password = "secret";
@@ -130,11 +143,15 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
 
             var request = new SignIn(email, password);
 
-            // Check if exception is thrown
-            var requestResult = _requestHandler
-                .Awaiting(c => c.HandleAsync(request));
+            var response = await Act(request);
 
-            requestResult.Should().Throw<InvalidCredentialsException>();
+            response.Should().NotBeNull();
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            var exception = new InvalidCredentialsException(email);
+            content.Should().Contain(exception.Code);
         }
     }
 }

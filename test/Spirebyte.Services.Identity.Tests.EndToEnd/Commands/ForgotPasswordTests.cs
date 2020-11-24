@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Spirebyte.Services.Identity.API;
 using Spirebyte.Services.Identity.Application.Commands;
-using Spirebyte.Services.Identity.Application.Events;
+using Spirebyte.Services.Identity.Application.Exceptions;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Core.Exceptions;
@@ -15,17 +17,19 @@ using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
 using Xunit;
 
-namespace Spirebyte.Services.Identity.Tests.Integration.Commands
+namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
 {
     [Collection("Spirebyte collection")]
     public class ForgotPasswordTests : IDisposable
     {
+        private Task<HttpResponseMessage> Act(ForgotPassword command)
+            => _httpClient.PostAsync("forgot-password", GetContent(command));
+
         public ForgotPasswordTests(SpirebyteApplicationFactory<Program> factory)
         {
-            _rabbitMqFixture = new RabbitMqFixture();
             _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
             factory.Server.AllowSynchronousIO = true;
-            _commandHandler = factory.Services.GetRequiredService<ICommandHandler<ForgotPassword>>();
+            _httpClient = factory.CreateClient();
         }
 
         public void Dispose()
@@ -33,29 +37,35 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Commands
             _mongoDbFixture.Dispose();
         }
 
-        private const string Exchange = "identity";
+        private static StringContent GetContent(object value)
+            => new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
+
+        private readonly HttpClient _httpClient;
         private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
-        private readonly RabbitMqFixture _rabbitMqFixture;
-        private readonly ICommandHandler<ForgotPassword> _commandHandler;
 
 
         [Fact]
-        public async Task forgotpassword_command_fails_when_user_does_not_exist()
+        public async Task forgotpassword_endpoint_should_return_error_when_user_with_email_does_not_exist()
         {
             var email = "test@mail.com";
 
             var command = new ForgotPassword(email);
 
             // Check if exception is thrown
-            _commandHandler
-                .Awaiting(c => c.HandleAsync(command))
-                .Should().Throw<InvalidEmailException>();
+            var response = await Act(command);
+
+            response.Should().NotBeNull();
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            var content = await response.Content.ReadAsStringAsync();
+
+            var exception = new InvalidEmailException(email);
+            content.Should().Contain(exception.Code);
         }
 
         [Fact(Timeout = 10000)]
-        public async Task forgotpassword_command_should_create_password_forgotton_event_with_token()
+        public async Task forgotpassword_endpoint_should_return_http_status_code_ok()
         {
-            var id = Guid.NewGuid();
+            var id = new AggregateId();
             var email = "test@mail.com";
             var fullname = "fullname";
             var password = "secret";
@@ -66,23 +76,15 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Commands
             // Add user
             var user = new User(id, email, fullname, pic, password, role, securityStamp, DateTime.UtcNow,
                 new string[] { });
+
             await _mongoDbFixture.InsertAsync(user.AsDocument());
 
             var command = new ForgotPassword(email);
 
-            _commandHandler
-                .Awaiting(c => c.HandleAsync(command))
-                .Should().NotThrow();
+            var response = await Act(command);
 
-
-            var tcs = _rabbitMqFixture.Subscribe<PasswordForgotten>(Exchange);
-
-            var passwordForgotten = await tcs.Task;
-            passwordForgotten.Should().NotBeNull();
-            passwordForgotten.UserId.Should().Be(user.Id);
-            passwordForgotten.Fullname.Should().Be(user.Fullname);
-            passwordForgotten.Email.Should().Be(user.Email);
-            passwordForgotten.Token.Should().NotBeNullOrEmpty();
+            response.Should().NotBeNull();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }
