@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Spirebyte.Services.Identity.Application.DTO;
+using System;
 using System.Collections.Generic;
-using Spirebyte.Services.Identity.Application.DTO;
 
 namespace Spirebyte.Services.Identity.Application.Services.Interfaces
 {

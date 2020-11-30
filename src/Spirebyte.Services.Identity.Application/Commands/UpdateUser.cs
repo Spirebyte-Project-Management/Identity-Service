@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Convey.CQRS.Commands;
-using Microsoft.AspNetCore.Http;
+﻿using Convey.CQRS.Commands;
+using System;
 
 namespace Spirebyte.Services.Identity.Application.Commands
 {

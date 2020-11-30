@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.AccessControl;
-using System.Text;
-using Spirebyte.Services.Identity.Core.Entities;
 
 namespace Spirebyte.Services.Identity.Application.DTO
 {

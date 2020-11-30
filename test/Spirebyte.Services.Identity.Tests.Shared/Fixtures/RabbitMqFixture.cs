@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Convey.MessageBrokers.RabbitMQ;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using Spirebyte.Services.Identity.Tests.Shared.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Convey.MessageBrokers.RabbitMQ;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using Spirebyte.Services.Identity.Tests.Shared.Helpers;
 
 namespace Spirebyte.Services.Identity.Tests.Shared.Fixtures
 {

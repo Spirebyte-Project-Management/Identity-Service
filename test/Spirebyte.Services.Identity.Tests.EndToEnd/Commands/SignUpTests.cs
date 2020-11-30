@@ -1,11 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Convey.CQRS.Commands;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
+﻿using FluentAssertions;
 using Newtonsoft.Json;
 using Spirebyte.Services.Identity.API;
 using Spirebyte.Services.Identity.Application.Commands;
@@ -16,6 +9,11 @@ using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
@@ -45,7 +43,7 @@ namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
         private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
 
 
-        [Fact] 
+        [Fact]
         public async Task signup_endpoint_should_return_error_when_user_already_exists()
         {
             var id = new AggregateId();

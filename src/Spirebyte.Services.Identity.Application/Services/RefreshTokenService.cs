@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Spirebyte.Services.Identity.Application.DTO;
+﻿using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Application.Exceptions;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Core.Exceptions;
 using Spirebyte.Services.Identity.Core.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Application.Services
 {

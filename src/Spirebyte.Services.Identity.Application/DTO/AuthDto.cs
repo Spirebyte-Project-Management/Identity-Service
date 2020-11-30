@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Spirebyte.Services.Identity.Application.DTO
+﻿namespace Spirebyte.Services.Identity.Application.DTO
 {
     public class AuthDto
     {

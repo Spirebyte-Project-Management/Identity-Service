@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using Convey.CQRS.Queries;
+﻿using Convey.CQRS.Queries;
 using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Application.Queries;
 using Spirebyte.Services.Identity.Core.Repositories;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Queries.Handler
 {

@@ -18,7 +18,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Contexts
 
         public IAppContext Create()
         {
-            if (_contextAccessor.CorrelationContext is {})
+            if (_contextAccessor.CorrelationContext is { })
             {
                 var payload = JsonConvert.SerializeObject(_contextAccessor.CorrelationContext);
 
@@ -28,7 +28,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Contexts
             }
 
             var context = _httpContextAccessor.GetCorrelationContext();
-            
+
             return context is null ? AppContext.Empty : new AppContext(context);
         }
     }

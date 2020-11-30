@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Spirebyte.Services.Identity.Core.Entities.Base.Interfaces;
 using System.Collections.Generic;
-using System.Text;
-using Spirebyte.Services.Identity.Core.Entities.Base.Interfaces;
 
 namespace Spirebyte.Services.Identity.Core.Entities.Base
 {

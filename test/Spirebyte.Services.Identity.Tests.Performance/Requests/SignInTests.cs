@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NBomber.Contracts;
 using NBomber.CSharp;
@@ -16,6 +11,11 @@ using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
+using System;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Performance.Requests
@@ -50,7 +50,7 @@ namespace Spirebyte.Services.Identity.Tests.Performance.Requests
         public async Task signin_endpoint_runs_performantly()
         {
             const int duration = 3;
-            const int expectedRps = 100;
+            const int expectedRps = 50;
 
             var id = new AggregateId();
             var email = "test@mail.com";
@@ -73,7 +73,7 @@ namespace Spirebyte.Services.Identity.Tests.Performance.Requests
 
 
             var scenario = ScenarioBuilder.CreateScenario("GET resources", step)
-                .WithLoadSimulations(new []
+                .WithLoadSimulations(new[]
                 {
                     Simulation.InjectPerSec(rate: expectedRps, during: TimeSpan.FromSeconds(duration))
                 });

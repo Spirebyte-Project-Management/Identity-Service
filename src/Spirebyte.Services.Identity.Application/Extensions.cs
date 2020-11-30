@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Convey;
+﻿using Convey;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.Types;
 using Convey.WebApi.Requests;
 using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
+using System;
 
 namespace Spirebyte.Services.Identity.Application
 {

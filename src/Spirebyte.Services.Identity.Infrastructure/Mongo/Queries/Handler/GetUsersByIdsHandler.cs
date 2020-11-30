@@ -2,14 +2,14 @@
 using Convey.Persistence.MongoDB;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Application.Queries;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Queries.Handler
 {

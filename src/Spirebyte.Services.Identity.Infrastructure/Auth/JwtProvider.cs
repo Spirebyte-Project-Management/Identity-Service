@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Convey.Auth;
+﻿using Convey.Auth;
 using Spirebyte.Services.Identity.Application.DTO;
-using Spirebyte.Services.Identity.Application.Services;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Auth
 {

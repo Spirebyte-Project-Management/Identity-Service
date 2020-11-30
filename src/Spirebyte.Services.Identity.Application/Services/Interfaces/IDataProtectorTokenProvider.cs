@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Spirebyte.Services.Identity.Core.Entities.Base;
+﻿using Spirebyte.Services.Identity.Core.Entities.Base;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Application.Services.Interfaces
 {

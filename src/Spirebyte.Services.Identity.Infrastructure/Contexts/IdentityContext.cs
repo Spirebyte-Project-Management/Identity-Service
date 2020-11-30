@@ -1,6 +1,6 @@
+using Spirebyte.Services.Identity.Application;
 using System;
 using System.Collections.Generic;
-using Spirebyte.Services.Identity.Application;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Contexts
 {
@@ -29,7 +29,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Contexts
             IsAdmin = Role.Equals("admin", StringComparison.InvariantCultureIgnoreCase);
             Claims = claims ?? new Dictionary<string, string>();
         }
-        
+
         internal static IIdentityContext Empty => new IdentityContext();
     }
 }

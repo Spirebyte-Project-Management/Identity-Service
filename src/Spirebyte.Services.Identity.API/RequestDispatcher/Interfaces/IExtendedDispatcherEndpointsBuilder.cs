@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Convey.CQRS.Queries;
-using Convey.WebApi.CQRS;
+﻿using Convey.WebApi.CQRS;
 using Convey.WebApi.Requests;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.API.RequestDispatcher.Interfaces
 {

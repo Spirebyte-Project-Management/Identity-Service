@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Convey.Persistence.MongoDB;
+﻿using Convey.Persistence.MongoDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Mongo
 {

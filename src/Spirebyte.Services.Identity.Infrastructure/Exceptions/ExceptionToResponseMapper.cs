@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using Convey;
+﻿using Convey;
 using Convey.WebApi.Exceptions;
 using Spirebyte.Services.Identity.Application.Exceptions.Base;
 using Spirebyte.Services.Identity.Core.Exceptions.Base;
+using System;
+using System.Collections.Concurrent;
+using System.Net;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Exceptions
 {

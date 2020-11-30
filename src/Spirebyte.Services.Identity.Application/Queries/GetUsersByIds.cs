@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Convey.CQRS.Queries;
+﻿using Convey.CQRS.Queries;
 using Spirebyte.Services.Identity.Application.DTO;
+using System;
+using System.Collections.Generic;
 
 namespace Spirebyte.Services.Identity.Application.Queries
 {

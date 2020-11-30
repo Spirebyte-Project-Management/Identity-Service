@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Spirebyte.Services.Identity.Application.DTO;
+﻿using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Core.Entities;
+using System.Linq;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers
 {
     internal static class UserMappers
     {
         public static User AsEntity(this UserDocument document)
-            => new User(document.Id, document.Email, document.Fullname, document.Pic, document.Password, document.Role, document.SecurityStamp, document.CreatedAt, 
+            => new User(document.Id, document.Email, document.Fullname, document.Pic, document.Password, document.Role, document.SecurityStamp, document.CreatedAt,
                 document.Permissions);
 
         public static UserDocument AsDocument(this User entity)

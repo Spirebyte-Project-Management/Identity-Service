@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Convey.Persistence.MongoDB;
+﻿using Convey.Persistence.MongoDB;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Repositories;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Repositories
 {

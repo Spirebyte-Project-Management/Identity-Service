@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Convey.CQRS.Events;
-using Convey.MessageBrokers.RabbitMQ;
+﻿using Convey.MessageBrokers.RabbitMQ;
 using Spirebyte.Services.Identity.Application.Commands;
 using Spirebyte.Services.Identity.Application.Events.Rejected;
 using Spirebyte.Services.Identity.Application.Requests;
 using Spirebyte.Services.Identity.Core.Exceptions;
+using System;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Exceptions
 {
@@ -17,7 +14,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Exceptions
 
             {
                 EmailInUseException ex => new SignUpRejected(ex.Email, ex.Message, ex.Code),
-                InvalidCredentialsException ex => new SignInRejected(ex.Email,ex.Message, ex.Code),
+                InvalidCredentialsException ex => new SignInRejected(ex.Email, ex.Message, ex.Code),
                 InvalidEmailException ex => message switch
                 {
                     ForgotPassword command => new ForgotPasswordRejected(command.Email, ex.Message, ex.Code),

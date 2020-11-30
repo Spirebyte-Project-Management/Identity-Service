@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Convey.CQRS.Commands;
+﻿using Convey.CQRS.Commands;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.Outbox;
 using Convey.Types;
+using System;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Decorators
 {

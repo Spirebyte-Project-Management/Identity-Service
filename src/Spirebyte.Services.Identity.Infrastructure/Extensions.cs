@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Convey;
+﻿using Convey;
 using Convey.Auth;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
@@ -17,7 +12,6 @@ using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
 using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
-using Convey.Metrics.AppMetrics;
 using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
 using Convey.Security;
@@ -36,7 +30,6 @@ using Newtonsoft.Json;
 using Partytitan.Convey.WindowsAzure.Blob;
 using Spirebyte.Services.Identity.Application;
 using Spirebyte.Services.Identity.Application.Commands;
-using Spirebyte.Services.Identity.Application.Requests;
 using Spirebyte.Services.Identity.Application.Services;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Repositories;
@@ -48,6 +41,11 @@ using Spirebyte.Services.Identity.Infrastructure.Mongo;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Repositories;
 using Spirebyte.Services.Identity.Infrastructure.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Infrastructure
 {

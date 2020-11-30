@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Convey.CQRS.Commands;
+﻿using Convey.CQRS.Commands;
 using Microsoft.Extensions.Logging;
 using Spirebyte.Services.Identity.Application.Events;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Exceptions;
 using Spirebyte.Services.Identity.Core.Repositories;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Application.Commands.Handlers
 {
     internal sealed class ForgotPasswordHandler : ICommandHandler<ForgotPassword>
     {
         private readonly string Purpose = "resetpassword";
-        
+
         private readonly IUserRepository _userRepository;
         private readonly IMessageBroker _messageBroker;
         private readonly IDataProtectorTokenProvider _dataProtector;

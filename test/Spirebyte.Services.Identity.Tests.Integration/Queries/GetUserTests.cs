@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Convey.CQRS.Queries;
+﻿using Convey.CQRS.Queries;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Identity.API;
@@ -12,6 +10,8 @@ using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Integration.Queries

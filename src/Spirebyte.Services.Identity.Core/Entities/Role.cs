@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Spirebyte.Services.Identity.Core.Entities
+﻿namespace Spirebyte.Services.Identity.Core.Entities
 {
     public static class Role
     {

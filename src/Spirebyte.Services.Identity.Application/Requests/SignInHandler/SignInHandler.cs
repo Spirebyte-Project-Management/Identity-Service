@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Convey.WebApi.Requests;
+﻿using Convey.WebApi.Requests;
 using Microsoft.Extensions.Logging;
 using Spirebyte.Services.Identity.Application.DTO;
 using Spirebyte.Services.Identity.Application.Events;
-using Spirebyte.Services.Identity.Application.Services;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Exceptions;
 using Spirebyte.Services.Identity.Core.Repositories;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Application.Requests.SignInHandler
 {
@@ -29,7 +28,7 @@ namespace Spirebyte.Services.Identity.Application.Requests.SignInHandler
 
 
         public SignInHandler(IUserRepository userRepository, IPasswordService passwordService,
-            IMessageBroker messageBroker, ILogger<SignInHandler> logger, 
+            IMessageBroker messageBroker, ILogger<SignInHandler> logger,
             IJwtProvider jwtProvider, IRefreshTokenService refreshTokenService)
         {
             _userRepository = userRepository;

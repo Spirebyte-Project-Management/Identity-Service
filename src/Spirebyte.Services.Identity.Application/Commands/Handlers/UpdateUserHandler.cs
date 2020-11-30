@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Convey.CQRS.Commands;
+﻿using Convey.CQRS.Commands;
 using Microsoft.Extensions.Logging;
 using Partytitan.Convey.WindowsAzure.Blob.Services.Interfaces;
 using Spirebyte.Services.Identity.Application.Exceptions;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Repositories;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Application.Commands.Handlers
 {

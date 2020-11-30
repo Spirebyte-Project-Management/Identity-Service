@@ -1,5 +1,5 @@
-using System;
 using Spirebyte.Services.Identity.Application;
+using System;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Contexts
 {
@@ -22,7 +22,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Contexts
             RequestId = requestId;
             Identity = identity;
         }
-        
+
         internal static IAppContext Empty => new AppContext();
     }
 }

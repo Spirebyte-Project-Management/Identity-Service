@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Convey.CQRS.Events;
+﻿using Convey.CQRS.Events;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Application.Services.Interfaces
 {

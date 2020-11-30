@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Convey.Auth;
+﻿using Convey.Auth;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Entities.Base;
+using System;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Auth
 {

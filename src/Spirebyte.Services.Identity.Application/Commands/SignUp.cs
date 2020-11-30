@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Convey.CQRS.Commands;
+using System;
 using System.Collections.Generic;
-using Convey.CQRS.Commands;
-using System.Text;
 
 namespace Spirebyte.Services.Identity.Application.Commands
 {
@@ -23,7 +22,7 @@ namespace Spirebyte.Services.Identity.Application.Commands
             Fullname = fullname;
             Pic = pic;
             Password = password;
-            Role = role == string.Empty  ? "User" : role;
+            Role = role == string.Empty ? "User" : role;
             Permissions = permissions;
         }
     }
