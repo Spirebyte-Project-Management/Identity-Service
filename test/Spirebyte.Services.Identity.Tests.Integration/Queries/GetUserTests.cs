@@ -41,7 +41,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Queries
         [Fact]
         public async Task get_user_query_succeeds_when_user_exists()
         {
-            var id = new AggregateId();
+            var id = Guid.NewGuid();
             var email = "test@mail.com";
             var fullname = "fullname";
             var password = "secret";
@@ -77,7 +77,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Queries
         [Fact]
         public async Task get_user_query_should_return_null_when_user_does_not_exist()
         {
-            var id = new AggregateId();
+            var id = Guid.NewGuid();
 
             var query = new GetUser(id);
 

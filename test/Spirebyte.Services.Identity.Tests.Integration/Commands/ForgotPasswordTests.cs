@@ -51,7 +51,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Commands
                 .Should().Throw<InvalidEmailException>();
         }
 
-        [Fact(Timeout = 10000)]
+        [Fact(Timeout = 20000)]
         public async Task forgotpassword_command_should_create_password_forgotton_event_with_token()
         {
             var id = Guid.NewGuid();

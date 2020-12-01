@@ -44,7 +44,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
         [Fact]
         public async Task signin_request_should_sign_in_user_with_correct_username_and_password()
         {
-            var id = new AggregateId();
+            var id = Guid.NewGuid();
             var email = "test@mail.com";
             var fullname = "fullname";
             var password = "secret";
@@ -73,9 +73,9 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
 
 
         [Fact]
-        public async Task signup_request_fails_when_false_email_is_sent()
+        public async Task signin_request_fails_when_false_email_is_sent()
         {
-            var id = new AggregateId();
+            var id = Guid.NewGuid();
             var email = "test@mail";
             var fullname = "fullname";
             var password = "secret";
@@ -97,9 +97,9 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
         }
 
         [Fact]
-        public async Task signup_request_fails_when_password_is_incorrect()
+        public async Task signin_request_fails_when_password_is_incorrect()
         {
-            var id = new AggregateId();
+            var id = Guid.NewGuid();
             var email = "test@mail.com";
             var fullname = "fullname";
             var password = "secret";
@@ -122,7 +122,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
         }
 
         [Fact]
-        public async Task signup_request_fails_when_user_does_not_exist()
+        public async Task signin_request_fails_when_user_does_not_exist()
         {
             var email = "test@mail.com";
             var password = "secret";
