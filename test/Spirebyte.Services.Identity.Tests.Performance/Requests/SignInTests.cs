@@ -52,7 +52,7 @@ namespace Spirebyte.Services.Identity.Tests.Performance.Requests
             const int duration = 3;
             const int expectedRps = 50;
 
-            var id = new AggregateId();
+            var id = Guid.NewGuid();
             var email = "test@mail.com";
             var fullname = "fullname";
             var password = "secret";
