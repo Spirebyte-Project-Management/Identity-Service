@@ -45,7 +45,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
         public async Task signin_request_should_sign_in_user_with_correct_username_and_password()
         {
             var id = Guid.NewGuid();
-            var email = "test@mail.com";
+            var email = "logintest@mail.com";
             var fullname = "fullname";
             var password = "secret";
             var role = Role.User;

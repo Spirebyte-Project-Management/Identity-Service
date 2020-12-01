@@ -78,7 +78,6 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Commands
 
             var passwordForgotten = await tcs.Task;
             passwordForgotten.Should().NotBeNull();
-            passwordForgotten.UserId.Should().Be(user.Id);
             passwordForgotten.Fullname.Should().Be(user.Fullname);
             passwordForgotten.Email.Should().Be(user.Email);
             passwordForgotten.Token.Should().NotBeNullOrEmpty();
