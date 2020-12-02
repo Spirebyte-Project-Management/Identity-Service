@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Performance
 {
-    [CollectionDefinition("Spirebyte collection")]
+    [CollectionDefinition("Spirebyte collection", DisableParallelization = true)]
     public class SpirebyteCollection : ICollectionFixture<SpirebyteApplicationFactory<API.Program>>
     {
     }
