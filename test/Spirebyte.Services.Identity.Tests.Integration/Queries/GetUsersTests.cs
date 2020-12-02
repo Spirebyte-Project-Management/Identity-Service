@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Convey.MessageBrokers.RabbitMQ;
+using Convey.Persistence.MongoDB;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Integration.Queries
@@ -20,10 +22,12 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Queries
     [Collection("Spirebyte collection")]
     public class GetUsersTests : IDisposable
     {
-        public GetUsersTests(SpirebyteApplicationFactory<Program> factory)
+        public GetUsersTests(SpirebyteApplicationIntegrationFactory<Program> factory)
         {
-            _rabbitMqFixture = new RabbitMqFixture();
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
+            var rabbitmqOptions = factory.Services.GetRequiredService<RabbitMqOptions>();
+            _rabbitMqFixture = new RabbitMqFixture(rabbitmqOptions);
+            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
             factory.Server.AllowSynchronousIO = true;
             _queryHandler = factory.Services.GetRequiredService<IQueryHandler<GetUsers, IEnumerable<UserDto>>>();
         }

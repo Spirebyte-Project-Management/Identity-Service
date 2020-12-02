@@ -18,9 +18,8 @@ namespace Spirebyte.Services.Identity.Tests.Shared.Fixtures
         private readonly IModel _channel;
         private bool _disposed;
 
-        public RabbitMqFixture()
+        public RabbitMqFixture(RabbitMqOptions options)
         {
-            var options = OptionsHelper.GetOptions<RabbitMqOptions>("rabbitMq");
             var connectionFactory = new ConnectionFactory
             {
                 HostName = options.HostNames?.FirstOrDefault(

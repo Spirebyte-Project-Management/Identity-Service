@@ -14,6 +14,8 @@ using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
 using System;
 using System.Threading.Tasks;
+using Convey.MessageBrokers.RabbitMQ;
+using Convey.Persistence.MongoDB;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Integration.Requests
@@ -21,10 +23,12 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
     [Collection("Spirebyte collection")]
     public class SignInTests : IDisposable
     {
-        public SignInTests(SpirebyteApplicationFactory<Program> factory)
+        public SignInTests(SpirebyteApplicationIntegrationFactory<Program> factory)
         {
-            _rabbitMqFixture = new RabbitMqFixture();
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
+            var rabbitmqOptions = factory.Services.GetRequiredService<RabbitMqOptions>();
+            _rabbitMqFixture = new RabbitMqFixture(rabbitmqOptions);
+            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
             factory.Server.AllowSynchronousIO = true;
             _requestHandler = factory.Services.GetRequiredService<IRequestHandler<SignIn, AuthDto>>();
             _passwordService = factory.Services.GetRequiredService<IPasswordService>();

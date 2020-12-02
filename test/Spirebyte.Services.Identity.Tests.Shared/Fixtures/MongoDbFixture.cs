@@ -19,9 +19,8 @@ namespace Spirebyte.Services.Identity.Tests.Shared.Fixtures
 
         bool _disposed = false;
 
-        public MongoDbFixture(string collectionName)
+        public MongoDbFixture(string collectionName, MongoDbOptions options)
         {
-            var options = OptionsHelper.GetOptions<MongoDbOptions>("mongo");
             _client = new MongoClient(options.ConnectionString);
             _databaseName = options.Database;
             _collectionName = collectionName;

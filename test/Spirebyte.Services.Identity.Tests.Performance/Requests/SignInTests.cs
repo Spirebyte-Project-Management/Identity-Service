@@ -16,6 +16,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Convey.Persistence.MongoDB;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Performance.Requests
@@ -26,9 +27,10 @@ namespace Spirebyte.Services.Identity.Tests.Performance.Requests
         private Task<HttpResponseMessage> Act(SignIn request)
             => _httpClient.PostAsync("sign-in", GetContent(request));
 
-        public SignInTests(SpirebyteApplicationFactory<API.Program> factory)
+        public SignInTests(SpirebyteApplicationIntegrationFactory<API.Program> factory)
         {
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
+            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
             factory.Server.AllowSynchronousIO = true;
             _httpClient = factory.CreateClient();
             _passwordService = factory.Services.GetRequiredService<IPasswordService>();

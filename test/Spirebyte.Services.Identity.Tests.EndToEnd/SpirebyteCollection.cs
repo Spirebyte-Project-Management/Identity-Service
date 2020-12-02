@@ -7,7 +7,7 @@ using Xunit;
 namespace Spirebyte.Services.Identity.Tests.EndToEnd
 {
     [CollectionDefinition("Spirebyte collection", DisableParallelization = true)]
-    public class SpirebyteCollection : ICollectionFixture<SpirebyteApplicationFactory<Program>>
+    public class SpirebyteCollection : ICollectionFixture<SpirebyteApplicationEndToEndFactory<Program>>
     {
     }
 }

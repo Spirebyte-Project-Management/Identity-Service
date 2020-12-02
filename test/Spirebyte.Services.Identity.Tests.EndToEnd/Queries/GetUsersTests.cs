@@ -14,6 +14,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Convey.Persistence.MongoDB;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.EndToEnd.Queries
@@ -24,9 +26,10 @@ namespace Spirebyte.Services.Identity.Tests.EndToEnd.Queries
         private Task<HttpResponseMessage> Act(GetUsers query)
             => _httpClient.GetAsync("users");
 
-        public GetUsersTests(SpirebyteApplicationFactory<Program> factory)
+        public GetUsersTests(SpirebyteApplicationEndToEndFactory<Program> factory)
         {
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
+            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
             factory.Server.AllowSynchronousIO = true;
             _httpClient = factory.CreateClient();
         }

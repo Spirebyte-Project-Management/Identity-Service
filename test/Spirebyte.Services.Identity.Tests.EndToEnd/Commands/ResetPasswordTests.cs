@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Convey.Persistence.MongoDB;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
@@ -26,10 +27,11 @@ namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
         private Task<HttpResponseMessage> Act(ResetPassword command)
             => _httpClient.PostAsync("reset-password", GetContent(command));
 
-        public ResetPasswordTests(SpirebyteApplicationFactory<Program> factory)
+        public ResetPasswordTests(SpirebyteApplicationEndToEndFactory<Program> factory)
         {
             _dataProtectorTokenProvider = factory.Services.GetRequiredService<IDataProtectorTokenProvider>();
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
+            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
             factory.Server.AllowSynchronousIO = true;
             _httpClient = factory.CreateClient();
         }

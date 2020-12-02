@@ -8,6 +8,8 @@ using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
 using System;
 using System.Threading.Tasks;
+using Convey.MessageBrokers.RabbitMQ;
+using Convey.Persistence.MongoDB;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Integration.Services
@@ -15,10 +17,12 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Services
     [Collection("Spirebyte collection")]
     public class DataProtectorTokenProviderTests : IDisposable
     {
-        public DataProtectorTokenProviderTests(SpirebyteApplicationFactory<Program> factory)
+        public DataProtectorTokenProviderTests(SpirebyteApplicationIntegrationFactory<Program> factory)
         {
-            _rabbitMqFixture = new RabbitMqFixture();
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
+            var rabbitmqOptions = factory.Services.GetRequiredService<RabbitMqOptions>();
+            _rabbitMqFixture = new RabbitMqFixture(rabbitmqOptions);
+            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
             factory.Server.AllowSynchronousIO = true;
             _dataProtectorTokenProvider = factory.Services.GetRequiredService<IDataProtectorTokenProvider>();
         }

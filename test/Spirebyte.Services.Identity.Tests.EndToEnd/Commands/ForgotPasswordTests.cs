@@ -14,6 +14,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Convey.Persistence.MongoDB;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
@@ -24,9 +26,10 @@ namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
         private Task<HttpResponseMessage> Act(ForgotPassword command)
             => _httpClient.PostAsync("forgot-password", GetContent(command));
 
-        public ForgotPasswordTests(SpirebyteApplicationFactory<Program> factory)
+        public ForgotPasswordTests(SpirebyteApplicationEndToEndFactory<Program> factory)
         {
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users");
+            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
             factory.Server.AllowSynchronousIO = true;
             _httpClient = factory.CreateClient();
         }
