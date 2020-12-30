@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using Convey.Persistence.MongoDB;
+using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Spirebyte.Services.Identity.API;
 using Spirebyte.Services.Identity.Application.DTO;
@@ -14,8 +16,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Convey.Persistence.MongoDB;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.EndToEnd.Queries

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Convey.Persistence.MongoDB;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NBomber.Contracts;
 using NBomber.CSharp;
@@ -6,7 +7,6 @@ using Newtonsoft.Json;
 using Spirebyte.Services.Identity.Application.Requests;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Entities;
-using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Identity.Tests.Shared.Factories;
@@ -16,7 +16,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Convey.Persistence.MongoDB;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Performance.Requests

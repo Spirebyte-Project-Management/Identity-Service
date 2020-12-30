@@ -1,7 +1,6 @@
 ﻿using Convey.Persistence.MongoDB;
 using Convey.Types;
 using MongoDB.Driver;
-using Spirebyte.Services.Identity.Tests.Shared.Helpers;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;

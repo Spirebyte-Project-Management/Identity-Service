@@ -1,4 +1,6 @@
 ﻿using Convey.CQRS.Queries;
+using Convey.MessageBrokers.RabbitMQ;
+using Convey.Persistence.MongoDB;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Identity.API;
@@ -13,8 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Convey.MessageBrokers.RabbitMQ;
-using Convey.Persistence.MongoDB;
 using Xunit;
 
 namespace Spirebyte.Services.Identity.Tests.Integration.Queries
