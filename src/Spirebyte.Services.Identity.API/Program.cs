@@ -35,6 +35,7 @@ namespace Spirebyte.Services.Identity.API
                     .AddApplication()
                     .AddInfrastructure()
                     .Build())
+
                 .Configure(app => app
                     .UseInfrastructure()
                     .UsePingEndpoint()
