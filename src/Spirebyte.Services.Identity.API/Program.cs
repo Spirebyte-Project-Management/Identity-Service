@@ -41,6 +41,7 @@ namespace Spirebyte.Services.Identity.API
                     .UsePingEndpoint()
                     .UseExtendedDispatcherEndpoints(endpoints => endpoints
                         .Post<SignIn, AuthDto>("sign-in")
+                        .Post<UseRefreshToken, AuthDto>("refresh-tokens/use")
                     )
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
