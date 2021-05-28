@@ -20,7 +20,7 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var securityStamp = Guid.NewGuid().ToString();
 
             Action act = () => new User(id, email, fullname, "test.nl/image", password, role, securityStamp,
-                DateTime.UtcNow, new string[] { });
+                0, DateTime.MinValue, DateTime.UtcNow, new string[] { });
             act.Should().Throw<InvalidEmailException>();
         }
 
@@ -35,7 +35,7 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var securityStamp = Guid.NewGuid().ToString();
 
             Action act = () => new User(id, email, fullname, "test.nl/image", password, role, securityStamp,
-                DateTime.UtcNow, new string[] { });
+                0, DateTime.MinValue, DateTime.UtcNow, new string[] { });
             act.Should().Throw<InvalidPasswordException>();
         }
 
@@ -50,7 +50,7 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var securityStamp = Guid.NewGuid().ToString();
 
             Action act = () => new User(id, email, fullname, "test.nl/image", password, role, securityStamp,
-                DateTime.UtcNow, new string[] { });
+                0, DateTime.MinValue, DateTime.UtcNow, new string[] { });
             act.Should().Throw<InvalidFullnameException>();
         }
 
@@ -65,7 +65,7 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var securityStamp = Guid.NewGuid().ToString();
 
             Action act = () => new User(id, email, fullname, "test.nl/image", password, role, securityStamp,
-                DateTime.UtcNow, new string[] { });
+                0, DateTime.MinValue, DateTime.UtcNow, new string[] { });
             act.Should().Throw<InvalidRoleException>();
         }
 
@@ -78,7 +78,7 @@ namespace Spirebyte.Services.Identity.Tests.Unit.Core.Entities
             var password = "secret";
             var role = Role.User;
             var securityStamp = Guid.NewGuid().ToString();
-            var user = new User(id, email, fullname, "test.nl/image", password, role, securityStamp, DateTime.UtcNow,
+            var user = new User(id, email, fullname, "test.nl/image", password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
 
             user.Should().NotBeNull();

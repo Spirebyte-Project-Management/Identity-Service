@@ -56,7 +56,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
 
             // Add user
             var user = new User(id, email, fullname, "test.nl/image", _passwordService.Hash(password), role,
-                securityStamp, DateTime.UtcNow, new string[] { });
+                securityStamp, 0, DateTime.MinValue, DateTime.UtcNow, new string[] { });
             await _mongoDbFixture.InsertAsync(user.AsDocument());
 
             var request = new SignIn(email, password);
@@ -87,7 +87,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
 
             // Add user
             var user = new User(id, email, fullname, "test.nl/image", _passwordService.Hash(password), role,
-                securityStamp, DateTime.UtcNow, new string[] { });
+                securityStamp, 0, DateTime.MinValue, DateTime.UtcNow, new string[] { });
             await _mongoDbFixture.InsertAsync(user.AsDocument());
 
             var request = new SignIn(email, password);
@@ -112,7 +112,7 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Requests
 
             // Add user
             var user = new User(id, email, fullname, "test.nl/image", _passwordService.Hash(password), role,
-                securityStamp, DateTime.UtcNow, new string[] { });
+                securityStamp, 0, DateTime.MinValue, DateTime.UtcNow, new string[] { });
             await _mongoDbFixture.InsertAsync(user.AsDocument());
 
             var request = new SignIn(email, wrongPassword);

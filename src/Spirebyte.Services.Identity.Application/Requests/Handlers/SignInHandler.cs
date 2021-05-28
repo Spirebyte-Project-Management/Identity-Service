@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -47,15 +48,28 @@ namespace Spirebyte.Services.Identity.Application.Requests.Handlers
             }
 
             var user = await _userRepository.GetAsync(request.Email);
-            if (user is null || !_passwordService.IsValid(user.Password, request.Password))
+            if (user is null)
             {
                 _logger.LogError($"User with email: {request.Email} was not found.");
                 throw new InvalidCredentialsException(request.Email);
             }
 
+            if (user.IsLockedOut)
+            {
+                throw new UserLockedOutException(user.LockoutEnd.Subtract(DateTime.Now).Hours); 
+            }
+
             if (!_passwordService.IsValid(user.Password, request.Password))
             {
                 _logger.LogError($"Invalid password for user with id: {user.Id.Value}");
+                user.InvalidLogin();
+                await _userRepository.UpdateAsync(user);
+
+                if (user.IsLockedOut)
+                {
+                    throw new UserLockedOutException(user.LockoutEnd.Subtract(DateTime.Now).Hours);
+                }
+
                 throw new InvalidCredentialsException(request.Email);
             }
 
@@ -67,6 +81,10 @@ namespace Spirebyte.Services.Identity.Application.Requests.Handlers
                 : null;
             var auth = _jwtProvider.Create(user.Id, user.Role, claims: claims);
             auth.RefreshToken = await _refreshTokenService.CreateAsync(user.Id);
+
+            user.ValidLogin();
+            await _userRepository.UpdateAsync(user);
+
 
             _logger.LogInformation($"User with id: {user.Id} has been authenticated.");
             await _messageBroker.PublishAsync(new SignedIn(user.Id, user.Role));

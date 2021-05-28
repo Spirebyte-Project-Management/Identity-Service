@@ -3,6 +3,7 @@ using Spirebyte.Services.Identity.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Spirebyte.Services.Identity.Core.Constants;
 
 namespace Spirebyte.Services.Identity.Core.Entities
 {
@@ -16,9 +17,12 @@ namespace Spirebyte.Services.Identity.Core.Entities
         public string SecurityStamp { get; private set; }
         public string Password { get; private set; }
         public DateTime CreatedAt { get; private set; }
+        public int AccessFailedCount { get; private set; }
+        public DateTime LockoutEnd { get; private set; }
+        public bool IsLockedOut => LockoutEnd > DateTime.Now;
         public IEnumerable<string> Permissions { get; private set; }
 
-        public User(Guid id, string email, string fullname, string pic, string password, string role, string securityStamp, DateTime createdAt,
+        public User(Guid id, string email, string fullname, string pic, string password, string role, string securityStamp, int accessFailedCount, DateTime lockoutEnd, DateTime createdAt,
             IEnumerable<string> permissions = null)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -50,6 +54,8 @@ namespace Spirebyte.Services.Identity.Core.Entities
             SecurityStamp = securityStamp ?? Guid.NewGuid().ToString();
             Role = role.ToLowerInvariant();
             CreatedAt = createdAt == DateTime.MinValue ? DateTime.Now : createdAt;
+            AccessFailedCount = accessFailedCount;
+            LockoutEnd = lockoutEnd;
             Permissions = permissions ?? Enumerable.Empty<string>();
         }
 
@@ -62,6 +68,25 @@ namespace Spirebyte.Services.Identity.Core.Entities
 
             Password = password;
             SecurityStamp = Guid.Empty.ToString();
+
+            AccessFailedCount = 0;
+            LockoutEnd = DateTime.MinValue;
+        }
+
+        public void ValidLogin()
+        {
+            AccessFailedCount = 0;
+            LockoutEnd = DateTime.MinValue;
+        }
+        public void InvalidLogin()
+        {
+            if (AccessFailedCount >= AuthConstants.LoginFailuresBeforeLockout)
+            {
+                LockoutEnd = DateTime.Now.Add(AuthConstants.DefaultLockoutTime);
+                AccessFailedCount = 0;
+            }
+
+            AccessFailedCount++;
         }
     }
 }

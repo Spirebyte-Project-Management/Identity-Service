@@ -60,11 +60,11 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Queries
             var securityStamp = new Guid().ToString();
 
             // Add users
-            var user = new User(id, email, fullname, pic, password, role, securityStamp, DateTime.UtcNow,
+            var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
-            var user1 = new User(id1, email1, filterFullname, pic, password, role, securityStamp, DateTime.UtcNow,
+            var user1 = new User(id1, email1, filterFullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
-            var user2 = new User(id2, email2, filterFullname, pic, password, role, securityStamp, DateTime.UtcNow,
+            var user2 = new User(id2, email2, filterFullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
 
             await _mongoDbFixture.InsertAsync(user.AsDocument());
@@ -105,11 +105,11 @@ namespace Spirebyte.Services.Identity.Tests.Integration.Queries
             var securityStamp = new Guid().ToString();
 
             // Add users
-            var user = new User(id, email, fullname, pic, password, role, securityStamp, DateTime.UtcNow,
+            var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
-            var user1 = new User(id1, email1, filterFullname, pic, password, role, securityStamp, DateTime.UtcNow,
+            var user1 = new User(id1, email1, filterFullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
-            var user2 = new User(id2, email2, filterFullname, pic, password, role, securityStamp, DateTime.UtcNow,
+            var user2 = new User(id2, email2, filterFullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
 
             await _mongoDbFixture.InsertAsync(user.AsDocument());

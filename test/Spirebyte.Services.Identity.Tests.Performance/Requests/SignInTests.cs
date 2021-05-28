@@ -62,7 +62,7 @@ namespace Spirebyte.Services.Identity.Tests.Performance.Requests
 
             // Add user
             var user = new User(id, email, fullname, "test.nl/image", _passwordService.Hash(password), role,
-                securityStamp, DateTime.UtcNow, new string[] { });
+                securityStamp, 0, DateTime.MinValue, DateTime.UtcNow, new string[] { });
             await _mongoDbFixture.InsertAsync(user.AsDocument());
 
             var step = Step.Create("sendPost", async context =>

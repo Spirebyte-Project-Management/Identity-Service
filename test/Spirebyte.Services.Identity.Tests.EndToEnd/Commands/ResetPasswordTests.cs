@@ -63,7 +63,7 @@ namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
             var invalidSecurityStamp = Guid.NewGuid().ToString();
 
             // Add user
-            var user = new User(id, email, fullname, pic, password, role, securityStamp, DateTime.UtcNow,
+            var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
             await _mongoDbFixture.InsertAsync(user.AsDocument());
 
@@ -123,7 +123,7 @@ namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
             var securityStamp = new Guid().ToString();
 
             // Add user
-            var user = new User(id, email, fullname, pic, password, role, securityStamp, DateTime.UtcNow,
+            var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
                 new string[] { });
             await _mongoDbFixture.InsertAsync(user.AsDocument());
 

@@ -48,12 +48,12 @@ namespace Spirebyte.Services.Identity.API
                         .Get<GetUsersByIds, IEnumerable<UserDto>>("users/withids")
                         .Get<GetUsers, IEnumerable<UserDto>>("users")
                         .Get<GetUser, UserDto>("users/{userId}")
-                        .Get<GetUser, UserDto>("me",
+                        .Get<GetUser, UserDto>("profile",
                             beforeDispatch: async (cmd, ctx) => cmd.UserId = await ctx.AuthenticateUsingJwtAsync())
-                        .Post<SignUp>("sign-up", afterDispatch: (cmd, ctx) => ctx.Response.Created("identity/me"))
+                        .Post<SignUp>("sign-up", afterDispatch: (cmd, ctx) => ctx.Response.Created("identity/profile"))
                         .Post<ForgotPassword>("forgot-password")
                         .Post<ResetPassword>("reset-password")
-                        .Put<UpdateUser>("me",
+                        .Put<UpdateUser>("profile",
                             beforeDispatch: async (cmd, ctx) => cmd.UserId = await ctx.AuthenticateUsingJwtAsync())
                     ))
                 .UseLogging()

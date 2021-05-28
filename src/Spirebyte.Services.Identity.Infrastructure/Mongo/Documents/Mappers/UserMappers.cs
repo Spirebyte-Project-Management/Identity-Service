@@ -7,8 +7,7 @@ namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers
     internal static class UserMappers
     {
         public static User AsEntity(this UserDocument document)
-            => new User(document.Id, document.Email, document.Fullname, document.Pic, document.Password, document.Role, document.SecurityStamp, document.CreatedAt,
-                document.Permissions);
+            => new User(document.Id, document.Email, document.Fullname, document.Pic, document.Password, document.Role, document.SecurityStamp, document.AccessFailedCount, document.LockoutEnd, document.CreatedAt,document.Permissions);
 
         public static UserDocument AsDocument(this User entity)
             => new UserDocument
@@ -22,6 +21,8 @@ namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers
                 SecurityStamp = entity.SecurityStamp,
                 Role = entity.Role,
                 CreatedAt = entity.CreatedAt,
+                AccessFailedCount = entity.AccessFailedCount,
+                LockoutEnd = entity.LockoutEnd,
                 Permissions = entity.Permissions ?? Enumerable.Empty<string>()
             };
 
