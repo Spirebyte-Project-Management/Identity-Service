@@ -61,12 +61,14 @@ namespace Spirebyte.Services.Identity.Application.Requests.Handlers
 
             if (!_passwordService.IsValid(user.Password, request.Password))
             {
-                _logger.LogError($"Invalid password for user with id: {user.Id.Value}");
+                _logger.LogError($"Invalid authentication for user with id: {user.Id.Value}");
                 user.InvalidLogin();
                 await _userRepository.UpdateAsync(user);
 
                 if (user.IsLockedOut)
                 {
+                    _logger.LogError($"Locked out user with Id: {user.Id.Value}");
+
                     throw new UserLockedOutException(user.LockoutEnd.Subtract(DateTime.Now).Hours);
                 }
 
