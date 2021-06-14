@@ -43,14 +43,14 @@ namespace Spirebyte.Services.Identity.Application.Requests.Handlers
         {
             if (!EmailRegex.IsMatch(request.Email))
             {
-                _logger.LogError($"Invalid email: {request.Email}");
+                _logger.LogWarning($"Invalid email: {request.Email}");
                 throw new InvalidEmailException(request.Email);
             }
 
             var user = await _userRepository.GetAsync(request.Email);
             if (user is null)
             {
-                _logger.LogError($"User with email: {request.Email} was not found.");
+                _logger.LogWarning($"User with email: {request.Email} was not found.");
                 throw new InvalidCredentialsException(request.Email);
             }
 
@@ -61,13 +61,13 @@ namespace Spirebyte.Services.Identity.Application.Requests.Handlers
 
             if (!_passwordService.IsValid(user.Password, request.Password))
             {
-                _logger.LogError($"Invalid authentication for user with id: {user.Id.Value}");
+                _logger.LogWarning($"Invalid authentication for user with id: {user.Id.Value}");
                 user.InvalidLogin();
                 await _userRepository.UpdateAsync(user);
 
                 if (user.IsLockedOut)
                 {
-                    _logger.LogError($"Locked out user with Id: {user.Id.Value}");
+                    _logger.LogWarning($"Locked out user with Id: {user.Id.Value}");
 
                     throw new UserLockedOutException(user.LockoutEnd.Subtract(DateTime.Now).Hours);
                 }
