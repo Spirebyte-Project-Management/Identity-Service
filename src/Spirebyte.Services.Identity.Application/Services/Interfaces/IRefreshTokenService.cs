@@ -1,13 +1,12 @@
-﻿using Spirebyte.Services.Identity.Application.DTO;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Spirebyte.Services.Identity.Application.DTO;
 
-namespace Spirebyte.Services.Identity.Application.Services.Interfaces
+namespace Spirebyte.Services.Identity.Application.Services.Interfaces;
+
+public interface IRefreshTokenService
 {
-    public interface IRefreshTokenService
-    {
-        Task<string> CreateAsync(Guid userId);
-        Task RevokeAsync(string refreshToken);
-        Task<AuthDto> UseAsync(string refreshToken);
-    }
+    Task<string> CreateAsync(Guid userId);
+    Task RevokeAsync(string refreshToken);
+    Task<AuthDto> UseAsync(string refreshToken);
 }

@@ -1,4 +1,9 @@
-﻿using Convey.Persistence.MongoDB;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Convey.Persistence.MongoDB;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -12,130 +17,131 @@ using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
+namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands;
+
+[Collection("Spirebyte collection")]
+public class ResetPasswordTests : IDisposable
 {
-    [Collection("Spirebyte collection")]
-    public class ResetPasswordTests : IDisposable
+    private readonly IDataProtectorTokenProvider _dataProtectorTokenProvider;
+
+    private readonly HttpClient _httpClient;
+    private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
+    private readonly string Purpose = "resetpassword";
+
+    public ResetPasswordTests(SpirebyteApplicationEndToEndFactory<Program> factory)
     {
-        private Task<HttpResponseMessage> Act(ResetPassword command)
-            => _httpClient.PostAsync("reset-password", GetContent(command));
+        _dataProtectorTokenProvider = factory.Services.GetRequiredService<IDataProtectorTokenProvider>();
+        var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+        _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
+        factory.Server.AllowSynchronousIO = true;
+        _httpClient = factory.CreateClient();
+    }
 
-        public ResetPasswordTests(SpirebyteApplicationEndToEndFactory<Program> factory)
-        {
-            _dataProtectorTokenProvider = factory.Services.GetRequiredService<IDataProtectorTokenProvider>();
-            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
-            factory.Server.AllowSynchronousIO = true;
-            _httpClient = factory.CreateClient();
-        }
+    public void Dispose()
+    {
+        _mongoDbFixture.Dispose();
+    }
 
-        public void Dispose()
-        {
-            _mongoDbFixture.Dispose();
-        }
+    private Task<HttpResponseMessage> Act(ResetPassword command)
+    {
+        return _httpClient.PostAsync("reset-password", GetContent(command));
+    }
 
-        private static StringContent GetContent(object value)
-            => new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
+    private static StringContent GetContent(object value)
+    {
+        return new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
+    }
 
-        private readonly HttpClient _httpClient;
-        private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
-        private readonly string Purpose = "resetpassword";
-        private readonly IDataProtectorTokenProvider _dataProtectorTokenProvider;
+    [Fact]
+    public async Task resetpassword_endpoint_should_return_error_when_token_is_invalid()
+    {
+        var id = new AggregateId();
+        var email = "test@mail.com";
+        var fullname = "fullname";
+        var password = "secret";
+        var newPassword = "secret";
+        var pic = "test.nl/image";
+        var role = Role.User;
+        var securityStamp = Guid.NewGuid().ToString();
+        var invalidSecurityStamp = Guid.NewGuid().ToString();
 
-        [Fact]
-        public async Task resetpassword_endpoint_should_return_error_when_token_is_invalid()
-        {
-            var id = new AggregateId();
-            var email = "test@mail.com";
-            var fullname = "fullname";
-            var password = "secret";
-            var newPassword = "secret";
-            var pic = "test.nl/image";
-            var role = Role.User;
-            var securityStamp = Guid.NewGuid().ToString();
-            var invalidSecurityStamp = Guid.NewGuid().ToString();
+        // Add user
+        var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue,
+            DateTime.UtcNow,
+            new string[] { });
+        await _mongoDbFixture.InsertAsync(user.AsDocument());
 
-            // Add user
-            var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
-                new string[] { });
-            await _mongoDbFixture.InsertAsync(user.AsDocument());
+        // generate reset token
+        var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, invalidSecurityStamp);
 
-            // generate reset token
-            var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, invalidSecurityStamp);
-
-            var command = new ResetPassword(id, newPassword, token);
+        var command = new ResetPassword(id, newPassword, token);
 
 
-            var response = await Act(command);
+        var response = await Act(command);
 
-            response.Should().NotBeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        }
-
-
-        [Fact]
-        public async Task resetpassword_endpoint_should_return_error_when_user_does_not_exist()
-        {
-            var id = new AggregateId();
-            var email = "test@mail.com";
-            var fullname = "fullname";
-            var password = "secret";
-            var newPassword = "secret";
-            var pic = "test.nl/image";
-            var role = Role.User;
-            var securityStamp = new Guid().ToString();
+        response.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 
 
-            // generate reset token
-            var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, securityStamp);
+    [Fact]
+    public async Task resetpassword_endpoint_should_return_error_when_user_does_not_exist()
+    {
+        var id = new AggregateId();
+        var email = "test@mail.com";
+        var fullname = "fullname";
+        var password = "secret";
+        var newPassword = "secret";
+        var pic = "test.nl/image";
+        var role = Role.User;
+        var securityStamp = new Guid().ToString();
 
-            var command = new ResetPassword(id, newPassword, token);
+
+        // generate reset token
+        var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, securityStamp);
+
+        var command = new ResetPassword(id, newPassword, token);
 
 
-            var response = await Act(command);
+        var response = await Act(command);
 
-            response.Should().NotBeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-            var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync();
 
-            var exception = new UserNotFoundException(id);
-            content.Should().Contain(exception.Code);
-        }
+        var exception = new UserNotFoundException(id);
+        content.Should().Contain(exception.Code);
+    }
 
-        [Fact]
-        public async Task resetpassword_endpoint_should_return_http_status_code_ok()
-        {
-            var id = new AggregateId();
-            var email = "test@mail.com";
-            var fullname = "fullname";
-            var password = "secret";
-            var newPassword = "secret";
-            var pic = "test.nl/image";
-            var role = Role.User;
-            var securityStamp = new Guid().ToString();
+    [Fact]
+    public async Task resetpassword_endpoint_should_return_http_status_code_ok()
+    {
+        var id = new AggregateId();
+        var email = "test@mail.com";
+        var fullname = "fullname";
+        var password = "secret";
+        var newPassword = "secret";
+        var pic = "test.nl/image";
+        var role = Role.User;
+        var securityStamp = new Guid().ToString();
 
-            // Add user
-            var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
-                new string[] { });
-            await _mongoDbFixture.InsertAsync(user.AsDocument());
+        // Add user
+        var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue,
+            DateTime.UtcNow,
+            new string[] { });
+        await _mongoDbFixture.InsertAsync(user.AsDocument());
 
-            // generate reset token
-            var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, securityStamp);
+        // generate reset token
+        var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, securityStamp);
 
-            var command = new ResetPassword(id, newPassword, token);
+        var command = new ResetPassword(id, newPassword, token);
 
-            var response = await Act(command);
+        var response = await Act(command);
 
-            response.Should().NotBeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
+        response.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }

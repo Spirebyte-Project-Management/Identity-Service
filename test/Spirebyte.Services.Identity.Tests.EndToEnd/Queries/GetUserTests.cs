@@ -1,4 +1,9 @@
-﻿using Convey.Persistence.MongoDB;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Convey.Persistence.MongoDB;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -11,90 +16,89 @@ using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Spirebyte.Services.Identity.Tests.EndToEnd.Queries
+namespace Spirebyte.Services.Identity.Tests.EndToEnd.Queries;
+
+[Collection("Spirebyte collection")]
+public class GetUserTests : IDisposable
 {
-    [Collection("Spirebyte collection")]
-    public class GetUserTests : IDisposable
+    private readonly HttpClient _httpClient;
+    private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
+
+    public GetUserTests(SpirebyteApplicationEndToEndFactory<Program> factory)
     {
-        private Task<HttpResponseMessage> Act(GetUser query)
-            => _httpClient.GetAsync($"users/{query.UserId}");
+        var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+        _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
+        factory.Server.AllowSynchronousIO = true;
+        _httpClient = factory.CreateClient();
+    }
 
-        public GetUserTests(SpirebyteApplicationEndToEndFactory<Program> factory)
-        {
-            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
-            factory.Server.AllowSynchronousIO = true;
-            _httpClient = factory.CreateClient();
-        }
+    public void Dispose()
+    {
+        _mongoDbFixture.Dispose();
+    }
 
-        public void Dispose()
-        {
-            _mongoDbFixture.Dispose();
-        }
+    private Task<HttpResponseMessage> Act(GetUser query)
+    {
+        return _httpClient.GetAsync($"users/{query.UserId}");
+    }
 
-        private static StringContent GetContent(object value)
-            => new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
-
-        private readonly HttpClient _httpClient;
-        private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
-
-
-        [Fact]
-        public async Task get_user_endpoint_should_return_http_status_code_ok_and_user_dto()
-        {
-            var id = new AggregateId();
-            var email = "test@mail.com";
-            var fullname = "fullname";
-            var password = "secret";
-            var pic = "test.nl/image";
-            var role = Role.User;
-            var securityStamp = new Guid().ToString();
-
-            // Add user
-            var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow,
-                new string[] { });
-            await _mongoDbFixture.InsertAsync(user.AsDocument());
+    private static StringContent GetContent(object value)
+    {
+        return new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
+    }
 
 
-            var query = new GetUser(user.Id);
+    [Fact]
+    public async Task get_user_endpoint_should_return_http_status_code_ok_and_user_dto()
+    {
+        var id = new AggregateId();
+        var email = "test@mail.com";
+        var fullname = "fullname";
+        var password = "secret";
+        var pic = "test.nl/image";
+        var role = Role.User;
+        var securityStamp = new Guid().ToString();
 
-            // Check if exception is thrown
+        // Add user
+        var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue,
+            DateTime.UtcNow,
+            new string[] { });
+        await _mongoDbFixture.InsertAsync(user.AsDocument());
 
-            var response = await Act(query);
 
-            response.Should().NotBeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var query = new GetUser(user.Id);
 
-            var content = await response.Content.ReadAsStringAsync();
-            var userDto = JsonConvert.DeserializeObject<UserDto>(content);
-            userDto.Should().NotBeNull();
-            userDto.Id.Should().Be(user.Id);
-            userDto.Email.Should().Be(user.Email);
-            userDto.Fullname.Should().Be(user.Fullname);
-            userDto.Pic.Should().Be(user.Pic);
-            userDto.Role.Should().Be(user.Role);
-        }
+        // Check if exception is thrown
 
-        [Fact]
-        public async Task get_user_endpoint_should_return_not_found_when_no_user_with_id_exists()
-        {
-            var id = new AggregateId();
+        var response = await Act(query);
 
-            var query = new GetUser(id);
+        response.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            // Check if exception is thrown
+        var content = await response.Content.ReadAsStringAsync();
+        var userDto = JsonConvert.DeserializeObject<UserDto>(content);
+        userDto.Should().NotBeNull();
+        userDto.Id.Should().Be(user.Id);
+        userDto.Email.Should().Be(user.Email);
+        userDto.Fullname.Should().Be(user.Fullname);
+        userDto.Pic.Should().Be(user.Pic);
+        userDto.Role.Should().Be(user.Role);
+    }
 
-            var response = await Act(query);
+    [Fact]
+    public async Task get_user_endpoint_should_return_not_found_when_no_user_with_id_exists()
+    {
+        var id = new AggregateId();
 
-            response.Should().NotBeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        }
+        var query = new GetUser(id);
+
+        // Check if exception is thrown
+
+        var response = await Act(query);
+
+        response.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

@@ -1,19 +1,18 @@
 ﻿using Convey.CQRS.Events;
 
-namespace Spirebyte.Services.Identity.Application.Events.Rejected
-{
-    [Contract]
-    public class SignUpRejected : IRejectedEvent
-    {
-        public string Email { get; }
-        public string Reason { get; }
-        public string Code { get; }
+namespace Spirebyte.Services.Identity.Application.Events.Rejected;
 
-        public SignUpRejected(string email, string reason, string code)
-        {
-            Email = email;
-            Reason = reason;
-            Code = code;
-        }
+[Contract]
+public class SignUpRejected : IRejectedEvent
+{
+    public SignUpRejected(string email, string reason, string code)
+    {
+        Email = email;
+        Reason = reason;
+        Code = code;
     }
+
+    public string Email { get; }
+    public string Reason { get; }
+    public string Code { get; }
 }

@@ -1,17 +1,16 @@
-﻿using Convey.CQRS.Queries;
+﻿using System.Collections.Generic;
+using Convey.CQRS.Queries;
 using Spirebyte.Services.Identity.Application.DTO;
-using System.Collections.Generic;
 
-namespace Spirebyte.Services.Identity.Application.Queries
+namespace Spirebyte.Services.Identity.Application.Queries;
+
+public class GetUsers : IQuery<IEnumerable<UserDto>>
+
 {
-    public class GetUsers : IQuery<IEnumerable<UserDto>>
-
+    public GetUsers(string searchTerm = null)
     {
-        public string SearchTerm { get; set; }
-
-        public GetUsers(string searchTerm = null)
-        {
-            SearchTerm = searchTerm;
-        }
+        SearchTerm = searchTerm;
     }
+
+    public string SearchTerm { get; set; }
 }

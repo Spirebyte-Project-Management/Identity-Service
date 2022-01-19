@@ -4,10 +4,9 @@ using Xunit;
 
 [assembly: CollectionBehavior(MaxParallelThreads = 1, DisableTestParallelization = true)]
 
-namespace Spirebyte.Services.Identity.Tests.EndToEnd
+namespace Spirebyte.Services.Identity.Tests.EndToEnd;
+
+[CollectionDefinition("Spirebyte collection", DisableParallelization = true)]
+public class SpirebyteCollection : ICollectionFixture<SpirebyteApplicationEndToEndFactory<Program>>
 {
-    [CollectionDefinition("Spirebyte collection", DisableParallelization = true)]
-    public class SpirebyteCollection : ICollectionFixture<SpirebyteApplicationEndToEndFactory<Program>>
-    {
-    }
 }

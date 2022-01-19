@@ -1,4 +1,6 @@
-﻿using Convey.MessageBrokers.RabbitMQ;
+﻿using System;
+using System.Threading.Tasks;
+using Convey.MessageBrokers.RabbitMQ;
 using Convey.Persistence.MongoDB;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,59 +10,56 @@ using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Spirebyte.Services.Identity.Tests.Integration.Services
+namespace Spirebyte.Services.Identity.Tests.Integration.Services;
+
+[Collection("Spirebyte collection")]
+public class DataProtectorTokenProviderTests : IDisposable
 {
-    [Collection("Spirebyte collection")]
-    public class DataProtectorTokenProviderTests : IDisposable
+    private const string Exchange = "identity";
+    private readonly IDataProtectorTokenProvider _dataProtectorTokenProvider;
+    private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
+    private readonly RabbitMqFixture _rabbitMqFixture;
+
+    public DataProtectorTokenProviderTests(SpirebyteApplicationIntegrationFactory<Program> factory)
     {
-        public DataProtectorTokenProviderTests(SpirebyteApplicationIntegrationFactory<Program> factory)
-        {
-            var rabbitmqOptions = factory.Services.GetRequiredService<RabbitMqOptions>();
-            _rabbitMqFixture = new RabbitMqFixture(rabbitmqOptions);
-            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
-            factory.Server.AllowSynchronousIO = true;
-            _dataProtectorTokenProvider = factory.Services.GetRequiredService<IDataProtectorTokenProvider>();
-        }
+        var rabbitmqOptions = factory.Services.GetRequiredService<RabbitMqOptions>();
+        _rabbitMqFixture = new RabbitMqFixture(rabbitmqOptions);
+        var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+        _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
+        factory.Server.AllowSynchronousIO = true;
+        _dataProtectorTokenProvider = factory.Services.GetRequiredService<IDataProtectorTokenProvider>();
+    }
 
-        public void Dispose()
-        {
-            _mongoDbFixture.Dispose();
-        }
-
-        private const string Exchange = "identity";
-        private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
-        private readonly RabbitMqFixture _rabbitMqFixture;
-        private readonly IDataProtectorTokenProvider _dataProtectorTokenProvider;
+    public void Dispose()
+    {
+        _mongoDbFixture.Dispose();
+    }
 
 
-        [Fact]
-        public async Task dataprotectortokenprovider_should_be_able_to_validate_given_token()
-        {
-            var id = new AggregateId();
-            var purpose = "purpose";
-            var securityStamp = new Guid().ToString();
+    [Fact]
+    public async Task dataprotectortokenprovider_should_be_able_to_validate_given_token()
+    {
+        var id = new AggregateId();
+        var purpose = "purpose";
+        var securityStamp = new Guid().ToString();
 
-            var generatedToken = await _dataProtectorTokenProvider.GenerateAsync(purpose, id, securityStamp);
-            var result = await _dataProtectorTokenProvider.ValidateAsync(purpose, generatedToken, id, securityStamp);
+        var generatedToken = await _dataProtectorTokenProvider.GenerateAsync(purpose, id, securityStamp);
+        var result = await _dataProtectorTokenProvider.ValidateAsync(purpose, generatedToken, id, securityStamp);
 
-            result.Should().BeTrue();
-        }
+        result.Should().BeTrue();
+    }
 
-        [Fact]
-        public async Task dataprotectortokenprovider_should_generate_token_from_given_values()
-        {
-            var id = new AggregateId();
-            var purpose = "purpose";
-            var securityStamp = new Guid().ToString();
+    [Fact]
+    public async Task dataprotectortokenprovider_should_generate_token_from_given_values()
+    {
+        var id = new AggregateId();
+        var purpose = "purpose";
+        var securityStamp = new Guid().ToString();
 
-            var generatedToken = await _dataProtectorTokenProvider.GenerateAsync(purpose, id, securityStamp);
+        var generatedToken = await _dataProtectorTokenProvider.GenerateAsync(purpose, id, securityStamp);
 
-            generatedToken.Should().NotBeNullOrEmpty();
-        }
+        generatedToken.Should().NotBeNullOrEmpty();
     }
 }

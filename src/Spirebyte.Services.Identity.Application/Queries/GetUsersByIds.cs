@@ -1,17 +1,16 @@
-﻿using Convey.CQRS.Queries;
-using Spirebyte.Services.Identity.Application.DTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Convey.CQRS.Queries;
+using Spirebyte.Services.Identity.Application.DTO;
 
-namespace Spirebyte.Services.Identity.Application.Queries
+namespace Spirebyte.Services.Identity.Application.Queries;
+
+public class GetUsersByIds : IQuery<IEnumerable<UserDto>>
 {
-    public class GetUsersByIds : IQuery<IEnumerable<UserDto>>
+    public GetUsersByIds(Guid[] userIds)
     {
-        public Guid[] UserIds { get; set; }
-
-        public GetUsersByIds(Guid[] userIds)
-        {
-            UserIds = userIds;
-        }
+        UserIds = userIds;
     }
+
+    public Guid[] UserIds { get; set; }
 }

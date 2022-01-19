@@ -1,6 +1,5 @@
-﻿namespace Spirebyte.Services.Identity.Core.Entities.Base.Interfaces
+﻿namespace Spirebyte.Services.Identity.Core.Entities.Base.Interfaces;
+
+public interface IDomainEvent
 {
-    public interface IDomainEvent
-    {
-    }
 }

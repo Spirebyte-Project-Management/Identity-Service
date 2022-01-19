@@ -1,4 +1,9 @@
-﻿using Convey.Persistence.MongoDB;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Convey.Persistence.MongoDB;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -11,82 +16,81 @@ using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
 using Spirebyte.Services.Identity.Tests.Shared.Factories;
 using Spirebyte.Services.Identity.Tests.Shared.Fixtures;
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands
+namespace Spirebyte.Services.Identity.Tests.EndToEnd.Commands;
+
+[Collection("Spirebyte collection")]
+public class ForgotPasswordTests : IDisposable
 {
-    [Collection("Spirebyte collection")]
-    public class ForgotPasswordTests : IDisposable
+    private readonly HttpClient _httpClient;
+    private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
+
+    public ForgotPasswordTests(SpirebyteApplicationEndToEndFactory<Program> factory)
     {
-        private Task<HttpResponseMessage> Act(ForgotPassword command)
-            => _httpClient.PostAsync("forgot-password", GetContent(command));
+        var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
+        _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
+        factory.Server.AllowSynchronousIO = true;
+        _httpClient = factory.CreateClient();
+    }
 
-        public ForgotPasswordTests(SpirebyteApplicationEndToEndFactory<Program> factory)
-        {
-            var mongoOptions = factory.Services.GetRequiredService<MongoDbOptions>();
-            _mongoDbFixture = new MongoDbFixture<UserDocument, Guid>("users", mongoOptions);
-            factory.Server.AllowSynchronousIO = true;
-            _httpClient = factory.CreateClient();
-        }
+    public void Dispose()
+    {
+        _mongoDbFixture.Dispose();
+    }
 
-        public void Dispose()
-        {
-            _mongoDbFixture.Dispose();
-        }
+    private Task<HttpResponseMessage> Act(ForgotPassword command)
+    {
+        return _httpClient.PostAsync("forgot-password", GetContent(command));
+    }
 
-        private static StringContent GetContent(object value)
-            => new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
-
-        private readonly HttpClient _httpClient;
-        private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
+    private static StringContent GetContent(object value)
+    {
+        return new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
+    }
 
 
-        [Fact]
-        public async Task forgotpassword_endpoint_should_return_error_when_user_with_email_does_not_exist()
-        {
-            var email = "test@mail.com";
+    [Fact]
+    public async Task forgotpassword_endpoint_should_return_error_when_user_with_email_does_not_exist()
+    {
+        var email = "test@mail.com";
 
-            var command = new ForgotPassword(email);
+        var command = new ForgotPassword(email);
 
-            // Check if exception is thrown
-            var response = await Act(command);
+        // Check if exception is thrown
+        var response = await Act(command);
 
-            response.Should().NotBeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            var content = await response.Content.ReadAsStringAsync();
+        response.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var content = await response.Content.ReadAsStringAsync();
 
-            var exception = new InvalidEmailException(email);
-            content.Should().Contain(exception.Code);
-        }
+        var exception = new InvalidEmailException(email);
+        content.Should().Contain(exception.Code);
+    }
 
-        [Fact(Timeout = 10000)]
-        public async Task forgotpassword_endpoint_should_return_http_status_code_ok()
-        {
-            var id = new AggregateId();
-            var email = "test@mail.com";
-            var fullname = "fullname";
-            var password = "secret";
-            var pic = "test.nl/image";
-            var role = Role.User;
-            var securityStamp = new Guid().ToString();
+    [Fact(Timeout = 10000)]
+    public async Task forgotpassword_endpoint_should_return_http_status_code_ok()
+    {
+        var id = new AggregateId();
+        var email = "test@mail.com";
+        var fullname = "fullname";
+        var password = "secret";
+        var pic = "test.nl/image";
+        var role = Role.User;
+        var securityStamp = new Guid().ToString();
 
-            // Add user
-            var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue, DateTime.UtcNow, 
-                new string[] { });
+        // Add user
+        var user = new User(id, email, fullname, pic, password, role, securityStamp, 0, DateTime.MinValue,
+            DateTime.UtcNow,
+            new string[] { });
 
-            await _mongoDbFixture.InsertAsync(user.AsDocument());
+        await _mongoDbFixture.InsertAsync(user.AsDocument());
 
-            var command = new ForgotPassword(email);
+        var command = new ForgotPassword(email);
 
-            var response = await Act(command);
+        var response = await Act(command);
 
-            response.Should().NotBeNull();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-        }
+        response.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }

@@ -1,28 +1,26 @@
-using Spirebyte.Services.Identity.Application;
 using System;
+using Spirebyte.Services.Identity.Application;
 
-namespace Spirebyte.Services.Identity.Infrastructure.Contexts
+namespace Spirebyte.Services.Identity.Infrastructure.Contexts;
+
+internal class AppContext : IAppContext
 {
-    internal class AppContext : IAppContext
+    internal AppContext() : this(Guid.NewGuid().ToString("N"), IdentityContext.Empty)
     {
-        public string RequestId { get; }
-        public IIdentityContext Identity { get; }
-
-        internal AppContext() : this(Guid.NewGuid().ToString("N"), IdentityContext.Empty)
-        {
-        }
-
-        internal AppContext(CorrelationContext context) : this(context.CorrelationId,
-            context.User is null ? IdentityContext.Empty : new IdentityContext(context.User))
-        {
-        }
-
-        internal AppContext(string requestId, IIdentityContext identity)
-        {
-            RequestId = requestId;
-            Identity = identity;
-        }
-
-        internal static IAppContext Empty => new AppContext();
     }
+
+    internal AppContext(CorrelationContext context) : this(context.CorrelationId,
+        context.User is null ? IdentityContext.Empty : new IdentityContext(context.User))
+    {
+    }
+
+    internal AppContext(string requestId, IIdentityContext identity)
+    {
+        RequestId = requestId;
+        Identity = identity;
+    }
+
+    internal static IAppContext Empty => new AppContext();
+    public string RequestId { get; }
+    public IIdentityContext Identity { get; }
 }

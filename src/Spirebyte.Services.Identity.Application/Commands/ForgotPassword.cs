@@ -1,15 +1,14 @@
 ﻿using Convey.CQRS.Commands;
 
-namespace Spirebyte.Services.Identity.Application.Commands
-{
-    [Contract]
-    public class ForgotPassword : ICommand
-    {
-        public string Email { get; set; }
+namespace Spirebyte.Services.Identity.Application.Commands;
 
-        public ForgotPassword(string email)
-        {
-            Email = email;
-        }
+[Contract]
+public class ForgotPassword : ICommand
+{
+    public ForgotPassword(string email)
+    {
+        Email = email;
     }
+
+    public string Email { get; set; }
 }

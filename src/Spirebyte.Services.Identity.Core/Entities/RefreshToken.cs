@@ -1,44 +1,37 @@
-﻿using Spirebyte.Services.Identity.Core.Entities.Base;
+﻿using System;
+using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Core.Exceptions;
-using System;
 
-namespace Spirebyte.Services.Identity.Core.Entities
+namespace Spirebyte.Services.Identity.Core.Entities;
+
+public class RefreshToken : AggregateRoot
 {
-    public class RefreshToken : AggregateRoot
+    protected RefreshToken()
     {
-        public AggregateId UserId { get; private set; }
-        public string Token { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime? RevokedAt { get; private set; }
-        public bool Revoked => RevokedAt.HasValue;
+    }
 
-        protected RefreshToken()
-        {
-        }
+    public RefreshToken(AggregateId id, AggregateId userId, string token, DateTime createdAt,
+        DateTime? revokedAt = null)
+    {
+        if (string.IsNullOrWhiteSpace(token)) throw new EmptyRefreshTokenException();
 
-        public RefreshToken(AggregateId id, AggregateId userId, string token, DateTime createdAt,
-            DateTime? revokedAt = null)
-        {
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                throw new EmptyRefreshTokenException();
-            }
+        Id = id;
+        UserId = userId;
+        Token = token;
+        CreatedAt = createdAt;
+        RevokedAt = revokedAt;
+    }
 
-            Id = id;
-            UserId = userId;
-            Token = token;
-            CreatedAt = createdAt;
-            RevokedAt = revokedAt;
-        }
+    public AggregateId UserId { get; }
+    public string Token { get; }
+    public DateTime CreatedAt { get; }
+    public DateTime? RevokedAt { get; private set; }
+    public bool Revoked => RevokedAt.HasValue;
 
-        public void Revoke(DateTime revokedAt)
-        {
-            if (Revoked)
-            {
-                throw new RevokedRefreshTokenException();
-            }
+    public void Revoke(DateTime revokedAt)
+    {
+        if (Revoked) throw new RevokedRefreshTokenException();
 
-            RevokedAt = revokedAt;
-        }
+        RevokedAt = revokedAt;
     }
 }
