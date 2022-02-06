@@ -8,7 +8,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Spirebyte.Services.Identity.API;
-using Spirebyte.Services.Identity.Application.Commands;
+using Spirebyte.Services.Identity.Application.Users.Commands;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Core.Exceptions;

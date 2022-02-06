@@ -8,9 +8,9 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Spirebyte.Services.Identity.API;
-using Spirebyte.Services.Identity.Application.Commands;
-using Spirebyte.Services.Identity.Application.Exceptions;
-using Spirebyte.Services.Identity.Application.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Users.Commands;
+using Spirebyte.Services.Identity.Application.Users.Exceptions;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
@@ -28,7 +28,7 @@ public class ResetPasswordTests : IDisposable
 
     private readonly HttpClient _httpClient;
     private readonly MongoDbFixture<UserDocument, Guid> _mongoDbFixture;
-    private readonly string Purpose = "resetpassword";
+    private readonly string _purpose = "resetpassword";
 
     public ResetPasswordTests(SpirebyteApplicationEndToEndFactory<Program> factory)
     {
@@ -74,7 +74,7 @@ public class ResetPasswordTests : IDisposable
         await _mongoDbFixture.InsertAsync(user.AsDocument());
 
         // generate reset token
-        var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, invalidSecurityStamp);
+        var token = await _dataProtectorTokenProvider.GenerateAsync(_purpose, id, invalidSecurityStamp);
 
         var command = new ResetPassword(id, newPassword, token);
 
@@ -100,7 +100,7 @@ public class ResetPasswordTests : IDisposable
 
 
         // generate reset token
-        var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, securityStamp);
+        var token = await _dataProtectorTokenProvider.GenerateAsync(_purpose, id, securityStamp);
 
         var command = new ResetPassword(id, newPassword, token);
 
@@ -135,7 +135,7 @@ public class ResetPasswordTests : IDisposable
         await _mongoDbFixture.InsertAsync(user.AsDocument());
 
         // generate reset token
-        var token = await _dataProtectorTokenProvider.GenerateAsync(Purpose, id, securityStamp);
+        var token = await _dataProtectorTokenProvider.GenerateAsync(_purpose, id, securityStamp);
 
         var command = new ResetPassword(id, newPassword, token);
 

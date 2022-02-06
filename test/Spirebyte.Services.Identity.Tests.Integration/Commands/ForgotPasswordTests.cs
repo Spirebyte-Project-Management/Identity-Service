@@ -6,8 +6,8 @@ using Convey.Persistence.MongoDB;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Identity.API;
-using Spirebyte.Services.Identity.Application.Commands;
-using Spirebyte.Services.Identity.Application.Events;
+using Spirebyte.Services.Identity.Application.Users.Commands;
+using Spirebyte.Services.Identity.Application.Users.Events;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Exceptions;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
@@ -50,9 +50,9 @@ public class ForgotPasswordTests : IDisposable
         var command = new ForgotPassword(email);
 
         // Check if exception is thrown
-        _commandHandler
+        await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
-            .Should().Throw<InvalidEmailException>();
+            .Should().ThrowAsync<InvalidEmailException>();
     }
 
     [Fact(Timeout = 20000)]
@@ -74,9 +74,9 @@ public class ForgotPasswordTests : IDisposable
 
         var command = new ForgotPassword(email);
 
-        _commandHandler
+        await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
-            .Should().NotThrow();
+            .Should().NotThrowAsync();
 
 
         var tcs = _rabbitMqFixture.Subscribe<PasswordForgotten>(Exchange);

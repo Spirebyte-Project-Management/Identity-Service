@@ -6,9 +6,9 @@ using Convey.WebApi.Requests;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Identity.API;
-using Spirebyte.Services.Identity.Application.DTO;
-using Spirebyte.Services.Identity.Application.Requests;
-using Spirebyte.Services.Identity.Application.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Authentication.DTO;
+using Spirebyte.Services.Identity.Application.Authentication.Requests;
+using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Exceptions;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
@@ -64,7 +64,7 @@ public class SignInTests : IDisposable
         var requestResult = _requestHandler
             .Awaiting(c => c.HandleAsync(request));
 
-        requestResult.Should().NotThrow();
+        await requestResult.Should().NotThrowAsync();
 
         var result = await requestResult();
         result.Should().NotBeNull();
@@ -96,7 +96,7 @@ public class SignInTests : IDisposable
         var requestResult = _requestHandler
             .Awaiting(c => c.HandleAsync(request));
 
-        requestResult.Should().Throw<InvalidEmailException>();
+        await requestResult.Should().ThrowAsync<InvalidEmailException>();
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class SignInTests : IDisposable
         var requestResult = _requestHandler
             .Awaiting(c => c.HandleAsync(request));
 
-        requestResult.Should().Throw<InvalidCredentialsException>();
+        await requestResult.Should().ThrowAsync<InvalidCredentialsException>();
     }
 
     [Fact]
@@ -130,13 +130,12 @@ public class SignInTests : IDisposable
         var email = "test@mail.com";
         var password = "secret";
 
-
         var request = new SignIn(email, password);
 
         // Check if exception is thrown
         var requestResult = _requestHandler
             .Awaiting(c => c.HandleAsync(request));
 
-        requestResult.Should().Throw<InvalidCredentialsException>();
+        await requestResult.Should().ThrowAsync<InvalidCredentialsException>();
     }
 }

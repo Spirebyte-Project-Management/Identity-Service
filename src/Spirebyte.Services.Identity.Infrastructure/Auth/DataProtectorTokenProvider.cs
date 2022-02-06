@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Convey.Auth;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.IdentityModel.Tokens;
-using Spirebyte.Services.Identity.Application.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Auth;

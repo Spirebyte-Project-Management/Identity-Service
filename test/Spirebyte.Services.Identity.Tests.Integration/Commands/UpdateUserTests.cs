@@ -6,8 +6,8 @@ using Convey.Persistence.MongoDB;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Identity.API;
-using Spirebyte.Services.Identity.Application.Commands;
-using Spirebyte.Services.Identity.Application.Exceptions;
+using Spirebyte.Services.Identity.Application.Users.Commands;
+using Spirebyte.Services.Identity.Application.Users.Exceptions;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
@@ -56,12 +56,12 @@ public class UpdateUserTests : IDisposable
 
         // Add user
 
-        var command = new UpdateUser(id, updatedFullname, pic, null);
+        var command = new UpdateUser(id, updatedFullname, null);
 
         // Check if exception is thrown
-        _commandHandler
+        await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
-            .Should().Throw<UserNotFoundException>();
+            .Should().ThrowAsync<UserNotFoundException>();
     }
 
     [Fact]
@@ -82,11 +82,11 @@ public class UpdateUserTests : IDisposable
             new string[] { });
         await _mongoDbFixture.InsertAsync(user.AsDocument());
 
-        var command = new UpdateUser(id, updatedFullname, pic, null);
+        var command = new UpdateUser(id, updatedFullname, null);
 
-        _commandHandler
+        await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
-            .Should().NotThrow();
+            .Should().NotThrowAsync();
 
 
         var updatedUser = await _mongoDbFixture.GetAsync(command.UserId);
@@ -94,6 +94,5 @@ public class UpdateUserTests : IDisposable
         updatedUser.Should().NotBeNull();
         updatedUser.Id.Should().Be(command.UserId);
         updatedUser.Fullname.Should().Be(command.Fullname);
-        updatedUser.Pic.Should().Be(command.Pic);
     }
 }

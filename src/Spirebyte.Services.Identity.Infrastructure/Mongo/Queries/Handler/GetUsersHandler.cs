@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using Convey.Persistence.MongoDB;
-using Spirebyte.Services.Identity.Application.DTO;
-using Spirebyte.Services.Identity.Application.Queries;
+using Spirebyte.Services.Identity.Application.Users.DTO;
+using Spirebyte.Services.Identity.Application.Users.Queries;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;
 
@@ -20,7 +21,7 @@ internal sealed class GetUsersHandler : IQueryHandler<GetUsers, IEnumerable<User
         _repository = repository;
     }
 
-    public async Task<IEnumerable<UserDto>> HandleAsync(GetUsers query)
+    public async Task<IEnumerable<UserDto>> HandleAsync(GetUsers query, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(query.SearchTerm))
         {

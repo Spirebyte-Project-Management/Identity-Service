@@ -6,7 +6,7 @@ using Convey.Persistence.MongoDB;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Spirebyte.Services.Identity.API;
-using Spirebyte.Services.Identity.Application.Commands;
+using Spirebyte.Services.Identity.Application.Users.Commands;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Core.Exceptions;
@@ -43,7 +43,7 @@ public class SignUpTests : IDisposable
 
 
     [Fact]
-    public async Task signup_command_fails_when_user_with_email_alreadt_exists_in_database()
+    public async Task signup_command_fails_when_user_with_email_already_exists_in_database()
     {
         var id = new AggregateId();
         var email = "test@mail.com";
@@ -62,9 +62,9 @@ public class SignUpTests : IDisposable
         var command = new SignUp(id, email, fullname, "test.nl/image", password, role, new string[] { });
 
         // Check if exception is thrown
-        _commandHandler
+        await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
-            .Should().Throw<EmailInUseException>();
+            .Should().ThrowAsync<EmailInUseException>();
     }
 
     [Fact]
@@ -78,9 +78,9 @@ public class SignUpTests : IDisposable
 
         var command = new SignUp(id, email, fullname, "test.nl/image", password, role, new string[] { });
 
-        _commandHandler
+        await _commandHandler
             .Awaiting(c => c.HandleAsync(command))
-            .Should().NotThrow();
+            .Should().NotThrowAsync();
 
 
         var user = await _mongoDbFixture.GetAsync(command.UserId);

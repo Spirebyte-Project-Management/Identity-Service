@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
-using Spirebyte.Services.Identity.Application.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Auth;
 

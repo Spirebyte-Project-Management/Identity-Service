@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Spirebyte.Services.Identity.Application.DTO;
+using Spirebyte.Services.Identity.Application.Users.DTO;
 using Spirebyte.Services.Identity.Core.Entities;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Mongo.Documents.Mappers;

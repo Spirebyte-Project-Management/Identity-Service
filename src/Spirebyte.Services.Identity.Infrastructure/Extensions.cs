@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Convey;
 using Convey.Auth;
 using Convey.CQRS.Commands;
@@ -12,7 +9,6 @@ using Convey.Discovery.Consul;
 using Convey.Docs.Swagger;
 using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
-using Convey.MessageBrokers;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
 using Convey.MessageBrokers.Outbox.Mongo;
@@ -25,18 +21,16 @@ using Convey.Tracing.Jaeger.RabbitMQ;
 using Convey.WebApi;
 using Convey.WebApi.CQRS;
 using Convey.WebApi.Swagger;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
+using Open.Serialization.Json;
 using Partytitan.Convey.Minio;
 using Spirebyte.Services.Identity.Application;
-using Spirebyte.Services.Identity.Application.Commands;
-using Spirebyte.Services.Identity.Application.Services;
-using Spirebyte.Services.Identity.Application.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Authentication.Services;
+using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Users.Commands;
 using Spirebyte.Services.Identity.Core.Repositories;
 using Spirebyte.Services.Identity.Infrastructure.Auth;
 using Spirebyte.Services.Identity.Infrastructure.Contexts;
@@ -73,6 +67,7 @@ public static class Extensions
             .AddErrorHandler<ExceptionToResponseMapper>()
             .AddQueryHandlers()
             .AddInMemoryQueryDispatcher()
+            .AddInMemoryDispatcher()
             .AddJwt()
             .AddHttpClient()
             .AddConsul()
@@ -108,41 +103,29 @@ public static class Extensions
         return app;
     }
 
-    public static async Task<Guid> AuthenticateUsingJwtAsync(this HttpContext context)
-    {
-        var authentication = await context.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
-
-        return authentication.Succeeded ? Guid.Parse(authentication.Principal.Identity.Name) : Guid.Empty;
-    }
-
     internal static CorrelationContext GetCorrelationContext(this IHttpContextAccessor accessor)
     {
-        return accessor.HttpContext?.Request.Headers.TryGetValue("Correlation-Context", out var json) is true
-            ? JsonConvert.DeserializeObject<CorrelationContext>(json.FirstOrDefault())
-            : null;
+        if (accessor.HttpContext is null) return null;
+
+        if (!accessor.HttpContext.Request.Headers.TryGetValue("x-correlation-context", out var json)) return null;
+
+        var jsonSerializer = accessor.HttpContext.RequestServices.GetRequiredService<IJsonSerializer>();
+        var value = json.FirstOrDefault();
+
+        return string.IsNullOrWhiteSpace(value) ? null : jsonSerializer.Deserialize<CorrelationContext>(value);
     }
 
-    internal static IDictionary<string, object> GetHeadersToForward(this IMessageProperties messageProperties)
+    public static string GetUserIpAddress(this HttpContext context)
     {
-        const string sagaHeader = "Saga";
-        if (messageProperties?.Headers is null ||
-            !messageProperties.Headers.TryGetValue(sagaHeader, out var saga)) return null;
+        if (context is null) return string.Empty;
 
-        return saga is null
-            ? null
-            : new Dictionary<string, object>
-            {
-                [sagaHeader] = saga
-            };
-    }
+        var ipAddress = context.Connection.RemoteIpAddress?.ToString();
+        if (context.Request.Headers.TryGetValue("x-forwarded-for", out var forwardedFor))
+        {
+            var ipAddresses = forwardedFor.ToString().Split(",", StringSplitOptions.RemoveEmptyEntries);
+            if (ipAddresses.Any()) ipAddress = ipAddresses[0];
+        }
 
-    internal static string GetSpanContext(this IMessageProperties messageProperties, string header)
-    {
-        if (messageProperties is null) return string.Empty;
-
-        if (messageProperties.Headers.TryGetValue(header, out var span) && span is byte[] spanBytes)
-            return Encoding.UTF8.GetString(spanBytes);
-
-        return string.Empty;
+        return ipAddress ?? string.Empty;
     }
 }

@@ -2,9 +2,9 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using Spirebyte.Services.Identity.Application.Commands;
-using Spirebyte.Services.Identity.Application.Commands.Handlers;
-using Spirebyte.Services.Identity.Application.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Users.Commands;
+using Spirebyte.Services.Identity.Application.Users.Commands.Handlers;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Entities.Base;
 using Spirebyte.Services.Identity.Core.Exceptions;
@@ -44,7 +44,8 @@ public class SignUpHandlerTests
 
         var command = new SignUp(id, email, fullname, "test.nl/image", password, role, new string[] { });
         var func = async () => await _handler.HandleAsync(command);
-        func.Should().Throw<InvalidEmailException>();
+
+        await func.Should().ThrowAsync<InvalidEmailException>();
     }
 
     [Fact]
@@ -58,6 +59,7 @@ public class SignUpHandlerTests
 
         var command = new SignUp(id, email, fullname, "test.nl/image", password, role, new string[] { });
         var func = async () => await _handler.HandleAsync(command);
-        func.Should().NotThrow();
+
+        await func.Should().NotThrowAsync();
     }
 }
