@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Microsoft.Extensions.Logging;
 using Partytitan.Convey.Minio.Services.Interfaces;
-using Spirebyte.Services.Identity.Application.Contexts;
 using Spirebyte.Services.Identity.Application.Users.Exceptions;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Repositories;
+using Spirebyte.Shared.Contexts.Interfaces;
 
 namespace Spirebyte.Services.Identity.Application.Users.Commands.Handlers;
 

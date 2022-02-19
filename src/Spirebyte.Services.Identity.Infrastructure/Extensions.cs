@@ -33,13 +33,13 @@ using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces
 using Spirebyte.Services.Identity.Application.Users.Commands;
 using Spirebyte.Services.Identity.Core.Repositories;
 using Spirebyte.Services.Identity.Infrastructure.Auth;
-using Spirebyte.Services.Identity.Infrastructure.Contexts;
 using Spirebyte.Services.Identity.Infrastructure.Decorators;
 using Spirebyte.Services.Identity.Infrastructure.Exceptions;
 using Spirebyte.Services.Identity.Infrastructure.Mongo;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Repositories;
 using Spirebyte.Services.Identity.Infrastructure.Services;
+using Spirebyte.Shared.Contexts;
 
 namespace Spirebyte.Services.Identity.Infrastructure;
 
@@ -57,12 +57,12 @@ public static class Extensions
         builder.Services.AddTransient<IMessageBroker, MessageBroker>();
         builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
         builder.Services.AddTransient<IUserRepository, UserRepository>();
-        builder.Services.AddTransient<IAppContextFactory, AppContextFactory>();
-        builder.Services.AddTransient(ctx => ctx.GetRequiredService<IAppContextFactory>().Create());
         builder.Services.AddDataProtection();
         builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
         builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
+        builder.Services.AddSharedContexts();
+        
         return builder
             .AddErrorHandler<ExceptionToResponseMapper>()
             .AddQueryHandlers()

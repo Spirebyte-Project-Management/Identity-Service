@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spirebyte.Services.Identity.API.Controllers.Base;
-using Spirebyte.Services.Identity.Application.Contexts;
 using Spirebyte.Services.Identity.Application.Users.Commands;
 using Spirebyte.Services.Identity.Application.Users.DTO;
 using Spirebyte.Services.Identity.Application.Users.Queries;
+using Spirebyte.Shared.Contexts.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Spirebyte.Services.Identity.API.Controllers;
