@@ -13,6 +13,7 @@ using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
 using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
+using Convey.Metrics.AppMetrics;
 using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
 using Convey.Security;
@@ -77,6 +78,7 @@ public static class Extensions
             .AddMessageOutbox(o => o.AddMongo())
             .AddMongo()
             .AddRedis()
+            .AddMetrics()
             .AddJaeger()
             .AddMongoRepository<RefreshTokenDocument, Guid>("refreshTokens")
             .AddMongoRepository<UserDocument, Guid>("users")
@@ -93,6 +95,7 @@ public static class Extensions
             .UseConvey()
             .UseAccessTokenValidator()
             .UseMongo()
+            .UseMetrics()
             .UsePublicContracts<ContractAttribute>()
             .UseAuthentication()
             .UseRabbitMq()
