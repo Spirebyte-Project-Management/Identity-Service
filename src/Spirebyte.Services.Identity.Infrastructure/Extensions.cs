@@ -39,6 +39,7 @@ using Spirebyte.Services.Identity.Infrastructure.Exceptions;
 using Spirebyte.Services.Identity.Infrastructure.Mongo;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Repositories;
+using Spirebyte.Services.Identity.Infrastructure.ServiceDiscovery;
 using Spirebyte.Services.Identity.Infrastructure.Services;
 using Spirebyte.Shared.Contexts;
 
@@ -63,7 +64,7 @@ public static class Extensions
         builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
         builder.Services.AddSharedContexts();
-        
+
         return builder
             .AddErrorHandler<ExceptionToResponseMapper>()
             .AddQueryHandlers()
@@ -71,7 +72,7 @@ public static class Extensions
             .AddInMemoryDispatcher()
             .AddJwt()
             .AddHttpClient()
-            .AddConsul()
+            .AddCustomConsul()
             .AddFabio()
             .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
             .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
