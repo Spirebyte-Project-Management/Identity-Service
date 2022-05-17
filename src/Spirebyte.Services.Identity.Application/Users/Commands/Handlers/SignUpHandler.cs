@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
 using Spirebyte.Services.Identity.Application.Users.Events;
+using Spirebyte.Services.Identity.Application.Users.Exceptions;
 using Spirebyte.Services.Identity.Core.Entities;
 using Spirebyte.Services.Identity.Core.Exceptions;
 using Spirebyte.Services.Identity.Core.Repositories;
@@ -22,15 +25,14 @@ internal sealed class SignUpHandler : ICommandHandler<SignUp>
 
     private readonly ILogger<SignUpHandler> _logger;
     private readonly IMessageBroker _messageBroker;
-    private readonly IPasswordService _passwordService;
+    private readonly UserManager<User> _userManager;
     private readonly IUserRepository _userRepository;
 
-    public SignUpHandler(IUserRepository userRepository, IPasswordService passwordService,
-        IMessageBroker messageBroker, ILogger<SignUpHandler> logger)
+    public SignUpHandler(IUserRepository userRepository, IMessageBroker messageBroker, UserManager<User> userManager, ILogger<SignUpHandler> logger)
     {
         _userRepository = userRepository;
-        _passwordService = passwordService;
         _messageBroker = messageBroker;
+        _userManager = userManager;
         _logger = logger;
     }
 
@@ -38,24 +40,31 @@ internal sealed class SignUpHandler : ICommandHandler<SignUp>
     {
         if (!EmailRegex.IsMatch(command.Email))
         {
-            _logger.LogError($"Invalid email: {command.Email}");
+            _logger.LogError("Invalid email: {Email}", command.Email);
             throw new InvalidEmailException(command.Email);
         }
 
-        var user = await _userRepository.GetAsync(command.Email);
-        if (user is { })
+        var existingUser = await _userRepository.GetAsync(command.Email);
+        if (existingUser is { })
         {
-            _logger.LogError($"Email already in use: {command.Email}");
+            _logger.LogError("Email already in use: {Email}", command.Email);
             throw new EmailInUseException(command.Email);
         }
 
-        var role = string.IsNullOrWhiteSpace(command.Role) ? "user" : command.Role.ToLowerInvariant();
-        var password = _passwordService.Hash(command.Password);
-        user = new User(command.UserId, command.Email, command.Fullname, command.Pic, password, role,
-            Guid.NewGuid().ToString(), 0, DateTime.MinValue, DateTime.UtcNow, command.Permissions);
-        await _userRepository.AddAsync(user);
+        var user = new User
+        {
+            UserName = command.Fullname,
+            Email = command.Email
+        };
+        
+        var identityResult = await _userManager.CreateAsync(user, command.Password);
 
+        if (!identityResult.Succeeded)
+        {
+            var firstError = identityResult.Errors.First();
+            throw new SignUpException(firstError.Code, firstError.Description);
+        }
         _logger.LogInformation($"Created an account for the user with id: {user.Id}.");
-        await _messageBroker.PublishAsync(new SignedUp(user.Id, user.Email, user.Role));
+        await _messageBroker.PublishAsync(new SignedUp(user.Id, user.Email));
     }
 }

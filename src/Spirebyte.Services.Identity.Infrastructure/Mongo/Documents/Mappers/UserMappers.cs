@@ -8,28 +8,12 @@ internal static class UserMappers
 {
     public static User AsEntity(this UserDocument document)
     {
-        return new User(document.Id, document.Email, document.Fullname, document.Pic, document.Password, document.Role,
-            document.SecurityStamp, document.AccessFailedCount, document.LockoutEnd, document.CreatedAt,
-            document.Permissions);
+        return document;
     }
 
     public static UserDocument AsDocument(this User entity)
     {
-        return new UserDocument
-        {
-            Id = entity.Id,
-            Email = entity.Email,
-            Fullname = entity.Fullname,
-            NORMALIZED_FULLNAME = entity.NORMALIZED_FULLNAME,
-            Pic = entity.Pic,
-            Password = entity.Password,
-            SecurityStamp = entity.SecurityStamp,
-            Role = entity.Role,
-            CreatedAt = entity.CreatedAt,
-            AccessFailedCount = entity.AccessFailedCount,
-            LockoutEnd = entity.LockoutEnd,
-            Permissions = entity.Permissions ?? Enumerable.Empty<string>()
-        };
+        return entity as UserDocument;
     }
 
     public static UserDto AsDto(this User entity)
@@ -38,11 +22,12 @@ internal static class UserMappers
         {
             Id = entity.Id,
             Email = entity.Email,
-            Fullname = entity.Fullname,
+            PhoneNumber = entity.PhoneNumber,
+            Fullname = entity.UserName,
             Pic = entity.Pic,
-            Role = entity.Role,
-            CreatedAt = entity.CreatedAt,
-            Permissions = entity.Permissions ?? Enumerable.Empty<string>()
+            Roles = entity.Roles,
+            Claims = entity.Claims.Select(c => c.Value),
+            CreatedAt = entity.CreatedOn
         };
     }
 
@@ -52,11 +37,12 @@ internal static class UserMappers
         {
             Id = document.Id,
             Email = document.Email,
-            Fullname = document.Fullname,
+            PhoneNumber = document.PhoneNumber,
+            Fullname = document.UserName,
             Pic = document.Pic,
-            Role = document.Role,
-            CreatedAt = document.CreatedAt,
-            Permissions = document.Permissions ?? Enumerable.Empty<string>()
+            Roles = document.Roles,
+            Claims = document.Claims.Select(c => c.Value),
+            CreatedAt = document.CreatedOn
         };
     }
 }

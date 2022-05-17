@@ -5,7 +5,6 @@ using Convey.Auth;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Events;
 using Convey.CQRS.Queries;
-using Convey.Discovery.Consul;
 using Convey.Docs.Swagger;
 using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
@@ -33,9 +32,9 @@ using Spirebyte.Services.Identity.Application.Authentication.Services;
 using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
 using Spirebyte.Services.Identity.Application.Users.Commands;
 using Spirebyte.Services.Identity.Core.Repositories;
-using Spirebyte.Services.Identity.Infrastructure.Auth;
 using Spirebyte.Services.Identity.Infrastructure.Decorators;
 using Spirebyte.Services.Identity.Infrastructure.Exceptions;
+using Spirebyte.Services.Identity.Infrastructure.Identity;
 using Spirebyte.Services.Identity.Infrastructure.Mongo;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
 using Spirebyte.Services.Identity.Infrastructure.Mongo.Repositories;
@@ -49,15 +48,7 @@ public static class Extensions
 {
     public static IConveyBuilder AddInfrastructure(this IConveyBuilder builder)
     {
-        builder.Services.AddSingleton<IJwtProvider, JwtProvider>();
-
-        builder.Services.AddSingleton<IPasswordService, PasswordService>();
-        builder.Services.AddSingleton<IDataProtectorTokenProvider, DataProtectorTokenProvider>();
-        builder.Services.AddSingleton<IPasswordHasher<IPasswordService>, PasswordHasher<IPasswordService>>();
-        builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();
-        builder.Services.AddSingleton<IRng, Rng>();
         builder.Services.AddTransient<IMessageBroker, MessageBroker>();
-        builder.Services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
         builder.Services.AddTransient<IUserRepository, UserRepository>();
         builder.Services.AddDataProtection();
         builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
@@ -71,6 +62,7 @@ public static class Extensions
             .AddInMemoryQueryDispatcher()
             .AddInMemoryDispatcher()
             .AddJwt()
+            .AddIdentity()
             .AddHttpClient()
             .AddCustomConsul()
             .AddFabio()
@@ -81,7 +73,6 @@ public static class Extensions
             .AddRedis()
             .AddMetrics()
             .AddJaeger()
-            .AddMongoRepository<RefreshTokenDocument, Guid>("refreshTokens")
             .AddMongoRepository<UserDocument, Guid>("users")
             .AddWebApiSwaggerDocs()
             .AddMinio()
@@ -95,7 +86,6 @@ public static class Extensions
             .UseJaeger()
             .UseConvey()
             .UseAccessTokenValidator()
-            .UseMongo()
             .UseMetrics()
             .UsePublicContracts<ContractAttribute>()
             .UseAuthentication()

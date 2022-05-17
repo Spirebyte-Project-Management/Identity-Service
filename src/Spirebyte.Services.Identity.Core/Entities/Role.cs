@@ -1,16 +1,10 @@
-﻿namespace Spirebyte.Services.Identity.Core.Entities;
+﻿using System;
+using AspNetCore.Identity.MongoDbCore.Models;
+using MongoDbGenericRepository.Attributes;
 
-public static class Role
+namespace Spirebyte.Services.Identity.Core.Entities;
+
+[CollectionName("roles")]
+public class Role : MongoIdentityRole<Guid>
 {
-    public const string User = "user";
-    public const string Admin = "admin";
-
-    public static bool IsValid(string role)
-    {
-        if (string.IsNullOrWhiteSpace(role)) return false;
-
-        role = role.ToLowerInvariant();
-
-        return role == User || role == Admin;
-    }
 }

@@ -33,15 +33,4 @@ public class AuthController : BaseController
         var jwt = await _requestDispatcher.DispatchAsync<SignIn, AuthDto>(request);
         return Ok(jwt);
     }
-
-
-    [HttpPost("refresh-tokens/use")]
-    [SwaggerOperation("Use refresh token")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<AuthDto>> RefreshTokenAsync(UseRefreshToken request)
-    {
-        var jwt = await _requestDispatcher.DispatchAsync<UseRefreshToken, AuthDto>(request);
-        return Ok(jwt);
-    }
 }

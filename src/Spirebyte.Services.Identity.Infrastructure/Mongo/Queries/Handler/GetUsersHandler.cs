@@ -30,7 +30,7 @@ internal sealed class GetUsersHandler : IQueryHandler<GetUsers, IEnumerable<User
         }
 
         var filteredUsers =
-            await _repository.FindAsync(u => u.NORMALIZED_FULLNAME.Contains(query.SearchTerm.ToUpperInvariant()));
+            await _repository.FindAsync(u => u.NormalizedEmail.Contains(query.SearchTerm.ToUpperInvariant()));
 
         return filteredUsers?.Select(u => u.AsDto());
     }
