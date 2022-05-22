@@ -51,8 +51,7 @@ public class GetUsersByIdsHandler : IQueryHandler<GetUsersByIds, IEnumerable<Use
         {
             Id = user.Id,
             Email = user.Email,
-            PreferredUsername = userClaims.Claims.FirstOrDefault(c => c.ClaimType == JwtClaimTypes.PreferredUserName)
-                ?.ClaimValue,
+            PreferredUsername = user.UserName,
             Picture = userClaims.Claims.FirstOrDefault(c => c.ClaimType == JwtClaimTypes.Picture)?.ClaimValue,
         };
 
