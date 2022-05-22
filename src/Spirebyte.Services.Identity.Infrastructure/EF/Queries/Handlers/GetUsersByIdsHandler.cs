@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using IdentityModel;
 using Skoruba.IdentityServer4.Admin.BusinessLogic.Identity.Services.Interfaces;
+using Skoruba.IdentityServer4.Admin.EntityFramework.Configuration.Configuration.Identity;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Application.Users.DTO;
 using Spirebyte.Services.Identity.Application.Users.Queries;
@@ -30,9 +31,15 @@ public class GetUsersByIdsHandler : IQueryHandler<GetUsersByIds, IEnumerable<Use
     
     public async Task<IEnumerable<UserDto>> HandleAsync(GetUsersByIds query, CancellationToken cancellationToken = default)
     {
-        var userDtos = query.UserIds.Select(async u => await GetUserById(u.ToString()));
+        var userDtos = new List<UserDto>();
+
+        foreach (var userId in query.UserIds)
+        {
+            var userDto = await GetUserById(userId.ToString());
+            userDtos.Add(userDto);
+        }
         
-        return await Task.WhenAll(userDtos);
+        return userDtos;
     }
 
     private async Task<UserDto> GetUserById(string id)
