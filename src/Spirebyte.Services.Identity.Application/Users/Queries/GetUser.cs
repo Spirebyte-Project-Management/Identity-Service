@@ -4,4 +4,4 @@ using Spirebyte.Services.Identity.Application.Users.DTO;
 
 namespace Spirebyte.Services.Identity.Application.Users.Queries;
 
-public record GetUser(Guid UserId) : IQuery<UserDto>;
+public record GetUser(string UserId) : IQuery<UserDto>;

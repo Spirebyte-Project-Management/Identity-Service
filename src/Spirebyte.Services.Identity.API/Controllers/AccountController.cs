@@ -34,7 +34,7 @@ public class AccountController : BaseController
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserDto>> GetAsync()
     {
-        return OkOrNotFound(await _dispatcher.QueryAsync(new GetUser(_appContext.Identity.Id)));
+        return OkOrNotFound(await _dispatcher.QueryAsync(new GetUser(_appContext.Identity.Id.ToString())));
     }
 
     [HttpPut]
@@ -47,16 +47,6 @@ public class AccountController : BaseController
     public async Task<ActionResult> UpdateAccountAsync(UpdateUser command)
     {
         await _dispatcher.SendAsync(command.Bind(x => x.UserId, _appContext.Identity.Id));
-        return NoContent();
-    }
-
-    [HttpPost("sign-up")]
-    [SwaggerOperation("Sign up")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> SignUpAsync(SignUp request)
-    {
-        await _dispatcher.SendAsync(request);
         return NoContent();
     }
 }

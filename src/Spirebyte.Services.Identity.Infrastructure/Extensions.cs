@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Convey;
 using Convey.Auth;
@@ -27,17 +28,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Open.Serialization.Json;
 using Partytitan.Convey.Minio;
+using Skoruba.AuditLogging.EntityFramework.Entities;
 using Spirebyte.Services.Identity.Application;
-using Spirebyte.Services.Identity.Application.Authentication.Services;
-using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Application.Users.Commands;
-using Spirebyte.Services.Identity.Core.Repositories;
+using Spirebyte.Services.Identity.Application.Users.Mappers;
+using Spirebyte.Services.Identity.Core.Identity;
 using Spirebyte.Services.Identity.Infrastructure.Decorators;
+using Spirebyte.Services.Identity.Infrastructure.EF;
+using Spirebyte.Services.Identity.Infrastructure.EF.DbContexts;
+using Spirebyte.Services.Identity.Infrastructure.EF.Entities.Identity;
 using Spirebyte.Services.Identity.Infrastructure.Exceptions;
-using Spirebyte.Services.Identity.Infrastructure.Identity;
-using Spirebyte.Services.Identity.Infrastructure.Mongo;
-using Spirebyte.Services.Identity.Infrastructure.Mongo.Documents;
-using Spirebyte.Services.Identity.Infrastructure.Mongo.Repositories;
 using Spirebyte.Services.Identity.Infrastructure.ServiceDiscovery;
 using Spirebyte.Services.Identity.Infrastructure.Services;
 using Spirebyte.Shared.Contexts;
@@ -49,11 +50,34 @@ public static class Extensions
     public static IConveyBuilder AddInfrastructure(this IConveyBuilder builder)
     {
         builder.Services.AddTransient<IMessageBroker, MessageBroker>();
-        builder.Services.AddTransient<IUserRepository, UserRepository>();
         builder.Services.AddDataProtection();
         builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
         builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
+        builder.Services.RegisterDbContexts(builder);
+        
+        builder.Services
+            .AddIdentity<UserIdentity, UserIdentityRole>(options => builder.GetOptions<IdentityOptions>(nameof(IdentityOptions)))
+            .AddEntityFrameworkStores<AdminIdentityDbContext>()
+            .AddDefaultTokenProviders();
+        
+        var profileTypes = new HashSet<Type>
+        {
+            typeof(IdentityMapperProfile<IdentityRoleDto, IdentityUserRolesDto, string, IdentityUserClaimsDto, IdentityUserClaimDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto, IdentityRoleClaimDto, IdentityRoleClaimsDto>)
+        };
+
+        builder.Services.AddAdminAspNetIdentityServices<AdminIdentityDbContext, IdentityServerPersistedGrantDbContext,
+            IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim, UserIdentityUserRole,
+            UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
+            IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
+            IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
+            IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto>(profileTypes);
+
+        builder.Services.AddAdminServices<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminLogDbContext>();
+        
+        builder.Services.AddAuditEventLogging<AdminAuditLogDbContext, AuditLog>(builder);
+
+        
         builder.Services.AddSharedContexts();
 
         return builder
@@ -62,18 +86,15 @@ public static class Extensions
             .AddInMemoryQueryDispatcher()
             .AddInMemoryDispatcher()
             .AddJwt()
-            .AddIdentity()
             .AddHttpClient()
             .AddCustomConsul()
             .AddFabio()
             .AddExceptionToMessageMapper<ExceptionToMessageMapper>()
             .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
-            .AddMessageOutbox(o => o.AddMongo())
-            .AddMongo()
+            .AddMessageOutbox()
             .AddRedis()
             .AddMetrics()
             .AddJaeger()
-            .AddMongoRepository<UserDocument, Guid>("users")
             .AddWebApiSwaggerDocs()
             .AddMinio()
             .AddSecurity();
@@ -90,9 +111,7 @@ public static class Extensions
             .UsePublicContracts<ContractAttribute>()
             .UseAuthentication()
             .UseRabbitMq()
-            .SubscribeCommand<SignUp>()
-            .SubscribeCommand<UpdateUser>()
-            .SubscribeCommand<ResetPassword>();
+            .SubscribeCommand<UpdateUser>();
 
         return app;
     }

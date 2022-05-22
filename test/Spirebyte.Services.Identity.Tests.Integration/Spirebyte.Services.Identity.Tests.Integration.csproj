@@ -30,8 +30,4 @@
         <ProjectReference Include="..\Spirebyte.Services.Identity.Tests.Shared\Spirebyte.Services.Identity.Tests.Shared.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Requests" />
-    </ItemGroup>
-
 </Project>

@@ -28,8 +28,4 @@
         <ProjectReference Include="..\..\src\Spirebyte.Services.Identity.Core\Spirebyte.Services.Identity.Core.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Application\Handlers" />
-    </ItemGroup>
-
 </Project>

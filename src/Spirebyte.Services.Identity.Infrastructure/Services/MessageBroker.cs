@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Open.Serialization.Json;
 using OpenTracing;
-using Spirebyte.Services.Identity.Application.Authentication.Services.Interfaces;
+using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Shared.Contexts;
 
 namespace Spirebyte.Services.Identity.Infrastructure.Services;

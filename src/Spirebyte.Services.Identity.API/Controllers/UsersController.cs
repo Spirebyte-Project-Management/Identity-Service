@@ -29,7 +29,7 @@ public class UsersController : BaseController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<UserDto>> GetAsync(Guid userId)
     {
-        return OkOrNotFound(await _dispatcher.QueryAsync(new GetUser(userId)));
+        return OkOrNotFound(await _dispatcher.QueryAsync(new GetUser(userId.ToString())));
     }
 
     [HttpGet("withids")]
@@ -41,25 +41,5 @@ public class UsersController : BaseController
     public async Task<ActionResult<IEnumerable<UserDto>>> GetByIdsAsync([FromQuery] GetUsersByIds query)
     {
         return OkOrNotFound(await _dispatcher.QueryAsync(query));
-    }
-
-    [HttpPost("reset-password")]
-    [SwaggerOperation("Reset Password")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> SignUpAsync(ResetPassword command)
-    {
-        await _dispatcher.SendAsync(command);
-        return NoContent();
-    }
-
-    [HttpPost("forgot-password")]
-    [SwaggerOperation("Forgot password")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> SignUpAsync(ForgotPassword command)
-    {
-        await _dispatcher.SendAsync(command);
-        return NoContent();
     }
 }

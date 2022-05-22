@@ -27,11 +27,20 @@
         <PackageReference Include="Convey.Tracing.Jaeger.RabbitMQ" Version="1.0.531" />
         <PackageReference Include="Convey.WebApi.CQRS" Version="1.0.531" />
         <PackageReference Include="Convey.WebApi.Swagger" Version="1.0.531" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="6.0.5" />
         <PackageReference Include="Partytitan.Convey.Minio" Version="1.0.12" />
+        <PackageReference Include="Skoruba.AuditLogging.EntityFramework" Version="1.0.0" />
+        <PackageReference Include="Skoruba.IdentityServer4.Admin.BusinessLogic" Version="2.1.0" />
+        <PackageReference Include="Skoruba.IdentityServer4.Admin.BusinessLogic.Identity" Version="2.1.0" />
+        <PackageReference Include="Skoruba.IdentityServer4.Admin.EntityFramework.Configuration" Version="2.1.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Spirebyte.Services.Identity.Application\Spirebyte.Services.Identity.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="EF\Queries" />
     </ItemGroup>
 
 </Project>
