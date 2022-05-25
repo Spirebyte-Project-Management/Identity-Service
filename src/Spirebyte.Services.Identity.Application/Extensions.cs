@@ -6,6 +6,8 @@ using Convey.Types;
 using Convey.WebApi.Requests;
 using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
+using Spirebyte.Services.Identity.Application.PersonalAccessTokens.Services;
+using Spirebyte.Services.Identity.Application.PersonalAccessTokens.Services.Interfaces;
 
 namespace Spirebyte.Services.Identity.Application;
 
@@ -13,6 +15,8 @@ public static class Extensions
 {
     public static IConveyBuilder AddApplication(this IConveyBuilder builder)
     {
+        builder.Services.AddSingleton<ITokenRequestStorage, TokenRequestStorage>();
+
         return builder
             .AddCommandHandlers()
             .AddEventHandlers()
