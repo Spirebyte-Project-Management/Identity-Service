@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Convey.WebApi.CQRS;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Convey.WebApi.CQRS;
 using Spirebyte.Services.Identity.API.Controllers.Base;
-using Spirebyte.Services.Identity.Application.Users.Queries;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Spirebyte.Services.Identity.API.Controllers;
 

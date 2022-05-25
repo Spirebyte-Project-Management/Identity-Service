@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
+﻿using System.Net;
 using Convey;
 using Convey.Discovery.Consul;
 using Convey.HTTP;
@@ -17,7 +14,7 @@ public static class Extensions
     {
         if (string.IsNullOrWhiteSpace(sectionName))
             sectionName = "consul";
-        
+
         var consulOptions = builder.GetOptions<ConsulOptions>(sectionName);
         var httpClientOptions = builder.GetOptions<HttpClientOptions>(httpClientSectionName);
 
@@ -26,9 +23,9 @@ public static class Extensions
             var name = Dns.GetHostName(); // get container id
             consulOptions.Address = name;
         }
-        
+
         builder.AddConsul(consulOptions, httpClientOptions);
-        
+
         return builder;
     }
 }

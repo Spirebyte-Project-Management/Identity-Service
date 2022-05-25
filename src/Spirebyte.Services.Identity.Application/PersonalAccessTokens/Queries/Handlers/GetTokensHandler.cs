@@ -10,16 +10,17 @@ namespace Spirebyte.Services.Identity.Application.PersonalAccessTokens.Queries.H
 
 public class GetTokensHandler : IQueryHandler<GetTokens, IEnumerable<PersistedGrant>>
 {
-    private readonly IPersistedGrantStore _persistedGrantStore;
     private readonly IAppContext _appContext;
+    private readonly IPersistedGrantStore _persistedGrantStore;
 
     public GetTokensHandler(IPersistedGrantStore persistedGrantStore, IAppContext appContext)
     {
         _persistedGrantStore = persistedGrantStore;
         _appContext = appContext;
     }
-    
-    public async Task<IEnumerable<PersistedGrant>> HandleAsync(GetTokens query, CancellationToken cancellationToken = new CancellationToken())
+
+    public async Task<IEnumerable<PersistedGrant>> HandleAsync(GetTokens query,
+        CancellationToken cancellationToken = new())
     {
         var persistedGrantFilter = new PersistedGrantFilter
         {

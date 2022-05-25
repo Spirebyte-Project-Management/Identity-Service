@@ -1,21 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace Spirebyte.Services.Identity.Application.Users.DTO
+namespace Spirebyte.Services.Identity.Application.Users.DTO;
+
+public class UserProvidersApiDto<TKey>
 {
-    public class UserProvidersApiDto<TKey>
+    public UserProvidersApiDto()
     {
-        public UserProvidersApiDto()
-        {
-            Providers = new List<UserProviderApiDto<TKey>>();
-        }
-
-        public List<UserProviderApiDto<TKey>> Providers { get; set; }
+        Providers = new List<UserProviderApiDto<TKey>>();
     }
+
+    public List<UserProviderApiDto<TKey>> Providers { get; set; }
 }
-
-
-
-
-
-
-

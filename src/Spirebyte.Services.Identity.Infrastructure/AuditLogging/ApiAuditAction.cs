@@ -2,27 +2,19 @@
 using Microsoft.AspNetCore.Http.Extensions;
 using Skoruba.AuditLogging.Events;
 
-namespace Spirebyte.Services.Identity.Infrastructure.AuditLogging
+namespace Spirebyte.Services.Identity.Infrastructure.AuditLogging;
+
+public class ApiAuditAction : IAuditAction
 {
-    public class ApiAuditAction : IAuditAction
+    public ApiAuditAction(IHttpContextAccessor accessor)
     {
-        public ApiAuditAction(IHttpContextAccessor accessor)
+        Action = new
         {
-            Action = new
-            {
-                TraceIdentifier = accessor.HttpContext.TraceIdentifier,
-                RequestUrl = accessor.HttpContext.Request.GetDisplayUrl(),
-                HttpMethod = accessor.HttpContext.Request.Method
-            };
-        }
-
-        public object Action { get; set; }
+            accessor.HttpContext.TraceIdentifier,
+            RequestUrl = accessor.HttpContext.Request.GetDisplayUrl(),
+            HttpMethod = accessor.HttpContext.Request.Method
+        };
     }
+
+    public object Action { get; set; }
 }
-
-
-
-
-
-
-

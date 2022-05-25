@@ -49,7 +49,7 @@ internal sealed class UpdateUserHandler : ICommandHandler<UpdateUser>
                 picUrl = await _minioService.UploadFileAsync(contents, mimeType, fileName);
             }
         }
-        
+
 
         _logger.LogInformation($"Updated account for the user with id: {user.Id}.");
     }

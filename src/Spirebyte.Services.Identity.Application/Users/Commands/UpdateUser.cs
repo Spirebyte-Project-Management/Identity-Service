@@ -15,8 +15,9 @@ public class UpdateUser : ICommand
     }
 
     public Guid UserId { get; init; }
-    
+
     [JsonPropertyName("preferred_username")]
     public string PreferredUsername { get; init; }
+
     public string File { get; init; }
 }

@@ -13,28 +13,34 @@ namespace Spirebyte.Services.Identity.Infrastructure.EF.Queries.Handlers;
 
 public class GetUserHandler : IQueryHandler<GetUser, UserDto>
 {
-    private readonly IIdentityService<IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim, UserIdentityUserRole, UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken, IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto, IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto, IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto> _identityService;
+    private readonly IIdentityService<IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string,
+        UserIdentityUserClaim, UserIdentityUserRole, UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken
+        , IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto, IdentityUserClaimsDto, IdentityUserProviderDto,
+        IdentityUserProvidersDto, IdentityUserChangePasswordDto, IdentityRoleClaimsDto, IdentityUserClaimDto,
+        IdentityRoleClaimDto> _identityService;
 
-    public GetUserHandler(IIdentityService<IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim, UserIdentityUserRole,
-        UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
-        IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
-        IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
-        IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto> identityService)
+    public GetUserHandler(
+        IIdentityService<IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim
+            , UserIdentityUserRole,
+            UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
+            IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
+            IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
+            IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto> identityService)
     {
         _identityService = identityService;
     }
-    
+
     public async Task<UserDto> HandleAsync(GetUser query, CancellationToken cancellationToken = default)
     {
         var user = await _identityService.GetUserAsync(query.UserId);
         var userClaims = await _identityService.GetUserClaimsAsync(query.UserId);
 
-        var userDto = new UserDto()
+        var userDto = new UserDto
         {
             Id = user.Id,
             Email = user.Email,
             PreferredUsername = user.UserName,
-            Picture = userClaims.Claims.FirstOrDefault(c => c.ClaimType == JwtClaimTypes.Picture)?.ClaimValue,
+            Picture = userClaims.Claims.FirstOrDefault(c => c.ClaimType == JwtClaimTypes.Picture)?.ClaimValue
         };
 
         return userDto;

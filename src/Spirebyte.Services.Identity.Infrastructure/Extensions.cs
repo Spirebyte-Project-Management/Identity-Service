@@ -11,10 +11,8 @@ using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
 using Convey.MessageBrokers.CQRS;
 using Convey.MessageBrokers.Outbox;
-using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
 using Convey.Metrics.AppMetrics;
-using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
 using Convey.Security;
 using Convey.Tracing.Jaeger;
@@ -55,29 +53,35 @@ public static class Extensions
         builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
         builder.Services.RegisterDbContexts(builder);
-        
+
         builder.Services
-            .AddIdentity<UserIdentity, UserIdentityRole>(options => builder.GetOptions<IdentityOptions>(nameof(IdentityOptions)))
+            .AddIdentity<UserIdentity, UserIdentityRole>(options =>
+                builder.GetOptions<IdentityOptions>(nameof(IdentityOptions)))
             .AddEntityFrameworkStores<AdminIdentityDbContext>()
             .AddDefaultTokenProviders();
-        
+
         var profileTypes = new HashSet<Type>
         {
-            typeof(IdentityMapperProfile<IdentityRoleDto, IdentityUserRolesDto, string, IdentityUserClaimsDto, IdentityUserClaimDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto, IdentityRoleClaimDto, IdentityRoleClaimsDto>)
+            typeof(IdentityMapperProfile<IdentityRoleDto, IdentityUserRolesDto, string, IdentityUserClaimsDto,
+                IdentityUserClaimDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
+                IdentityRoleClaimDto, IdentityRoleClaimsDto>)
         };
 
         builder.Services.AddAdminAspNetIdentityServices<AdminIdentityDbContext, IdentityServerPersistedGrantDbContext,
-            IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim, UserIdentityUserRole,
+            IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim,
+            UserIdentityUserRole,
             UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
             IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
             IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
             IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto>(profileTypes);
 
-        builder.Services.AddAdminServices<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext, AdminLogDbContext>();
-        
+        builder.Services
+            .AddAdminServices<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext,
+                AdminLogDbContext>();
+
         builder.Services.AddAuditEventLogging<AdminAuditLogDbContext, AuditLog>(builder);
 
-        
+
         builder.Services.AddSharedContexts();
 
         return builder

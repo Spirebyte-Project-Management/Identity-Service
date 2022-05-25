@@ -5,7 +5,6 @@ using Convey.WebApi.CQRS;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spirebyte.Services.Identity.API.Controllers.Base;
-using Spirebyte.Services.Identity.Application.Users.Commands;
 using Spirebyte.Services.Identity.Application.Users.DTO;
 using Spirebyte.Services.Identity.Application.Users.Queries;
 using Swashbuckle.AspNetCore.Annotations;

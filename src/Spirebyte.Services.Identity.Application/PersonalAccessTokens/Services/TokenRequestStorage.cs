@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Spirebyte.Services.Identity.Application.PersonalAccessTokens.Services.Interfaces;
 

@@ -7,5 +7,4 @@ namespace Spirebyte.Services.Identity.Application.PersonalAccessTokens.Queries;
 [Contract]
 public class GetTokens : IQuery<IEnumerable<PersistedGrant>>
 {
-    
 }

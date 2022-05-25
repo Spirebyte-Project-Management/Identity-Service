@@ -1,5 +1,4 @@
-﻿using System;
-using Convey.CQRS.Queries;
+﻿using Convey.CQRS.Queries;
 using Spirebyte.Services.Identity.Application.Users.DTO;
 
 namespace Spirebyte.Services.Identity.Application.Users.Queries;
