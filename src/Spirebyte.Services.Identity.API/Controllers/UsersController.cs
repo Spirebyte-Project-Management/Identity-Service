@@ -19,6 +19,17 @@ public class UsersController : BaseController
     {
         _dispatcher = dispatcher;
     }
+    
+    [HttpGet]
+    [SwaggerOperation("Get all users")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAllAsync([FromQuery] GetUsers query)
+    {
+        return OkOrNotFound(await _dispatcher.QueryAsync(query));
+    }
 
     [HttpGet("{userId:guid}")]
     [SwaggerOperation("Get user")]
