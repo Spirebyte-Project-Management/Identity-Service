@@ -40,6 +40,7 @@ using Spirebyte.Services.Identity.Infrastructure.Exceptions;
 using Spirebyte.Services.Identity.Infrastructure.ServiceDiscovery;
 using Spirebyte.Services.Identity.Infrastructure.Services;
 using Spirebyte.Shared.Contexts;
+using Spirebyte.Shared.IdentityServer;
 
 namespace Spirebyte.Services.Identity.Infrastructure;
 
@@ -89,7 +90,7 @@ public static class Extensions
             .AddQueryHandlers()
             .AddInMemoryQueryDispatcher()
             .AddInMemoryDispatcher()
-            .AddJwt()
+            .AddIdentityServerAuthentication()
             .AddHttpClient()
             .AddCustomConsul()
             .AddFabio()
@@ -110,7 +111,6 @@ public static class Extensions
             .UseSwaggerDocs()
             .UseJaeger()
             .UseConvey()
-            .UseAccessTokenValidator()
             .UseMetrics()
             .UsePublicContracts<ContractAttribute>()
             .UseAuthentication()
