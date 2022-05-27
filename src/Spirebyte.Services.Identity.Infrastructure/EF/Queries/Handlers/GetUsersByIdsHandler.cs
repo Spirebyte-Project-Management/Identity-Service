@@ -4,35 +4,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using IdentityModel;
+using Microsoft.EntityFrameworkCore;
 using Skoruba.IdentityServer4.Admin.BusinessLogic.Identity.Services.Interfaces;
 using Spirebyte.Services.Identity.Application.Services.Interfaces;
 using Spirebyte.Services.Identity.Application.Users.DTO;
 using Spirebyte.Services.Identity.Application.Users.Queries;
 using Spirebyte.Services.Identity.Core.Identity;
+using Spirebyte.Services.Identity.Infrastructure.EF.DbContexts;
 using Spirebyte.Services.Identity.Infrastructure.EF.Entities.Identity;
 
 namespace Spirebyte.Services.Identity.Infrastructure.EF.Queries.Handlers;
 
 public class GetUsersByIdsHandler : IQueryHandler<GetUsersByIds, IEnumerable<UserDto>>
 {
-    private readonly IIdentityService<IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string,
-        UserIdentityUserClaim, UserIdentityUserRole, UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken
-        , IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto, IdentityUserClaimsDto, IdentityUserProviderDto,
-        IdentityUserProvidersDto, IdentityUserChangePasswordDto, IdentityRoleClaimsDto, IdentityUserClaimDto,
-        IdentityRoleClaimDto> _identityService;
-
+    private readonly AdminIdentityDbContext _dbContext;
     private readonly IMessageBroker _messageBroker;
 
-    public GetUsersByIdsHandler(
-        IIdentityService<IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim
-            , UserIdentityUserRole,
-            UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
-            IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
-            IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
-            IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto> identityService,
+    public GetUsersByIdsHandler(AdminIdentityDbContext dbContext,
         IMessageBroker messageBroker)
     {
-        _identityService = identityService;
+        _dbContext = dbContext;
         _messageBroker = messageBroker;
     }
 
@@ -52,15 +43,15 @@ public class GetUsersByIdsHandler : IQueryHandler<GetUsersByIds, IEnumerable<Use
 
     private async Task<UserDto> GetUserById(string id)
     {
-        var user = await _identityService.GetUserAsync(id);
-        var userClaims = await _identityService.GetUserClaimsAsync(id);
+        var user = await _dbContext.Users.FindAsync(id);
+        var userClaims = await _dbContext.UserClaims.Where(c => c.UserId == id).ToListAsync();
 
         var userDto = new UserDto
         {
             Id = user.Id,
             Email = user.Email,
             PreferredUsername = user.UserName,
-            Picture = userClaims.Claims.FirstOrDefault(c => c.ClaimType == JwtClaimTypes.Picture)?.ClaimValue
+            Picture = userClaims.FirstOrDefault(c => c.ClaimType == JwtClaimTypes.Picture)?.ClaimValue
         };
 
         return userDto;

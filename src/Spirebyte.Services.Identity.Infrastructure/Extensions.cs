@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Open.Serialization.Json;
 using Partytitan.Convey.Minio;
 using Skoruba.AuditLogging.EntityFramework.Entities;
@@ -53,38 +54,12 @@ public static class Extensions
         builder.Services.TryDecorate(typeof(ICommandHandler<>), typeof(OutboxCommandHandlerDecorator<>));
         builder.Services.TryDecorate(typeof(IEventHandler<>), typeof(OutboxEventHandlerDecorator<>));
 
+        
+        
         builder.Services.RegisterDbContexts(builder);
-
-        builder.Services
-            .AddIdentity<UserIdentity, UserIdentityRole>(options =>
-                builder.GetOptions<IdentityOptions>(nameof(IdentityOptions)))
-            .AddEntityFrameworkStores<AdminIdentityDbContext>()
-            .AddDefaultTokenProviders();
-
-        var profileTypes = new HashSet<Type>
-        {
-            typeof(IdentityMapperProfile<IdentityRoleDto, IdentityUserRolesDto, string, IdentityUserClaimsDto,
-                IdentityUserClaimDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
-                IdentityRoleClaimDto, IdentityRoleClaimsDto>)
-        };
-
-        builder.Services.AddAdminAspNetIdentityServices<AdminIdentityDbContext, IdentityServerPersistedGrantDbContext,
-            IdentityUserDto, IdentityRoleDto, UserIdentity, UserIdentityRole, string, UserIdentityUserClaim,
-            UserIdentityUserRole,
-            UserIdentityUserLogin, UserIdentityRoleClaim, UserIdentityUserToken,
-            IdentityUsersDto, IdentityRolesDto, IdentityUserRolesDto,
-            IdentityUserClaimsDto, IdentityUserProviderDto, IdentityUserProvidersDto, IdentityUserChangePasswordDto,
-            IdentityRoleClaimsDto, IdentityUserClaimDto, IdentityRoleClaimDto>(profileTypes);
-
-        builder.Services
-            .AddAdminServices<IdentityServerConfigurationDbContext, IdentityServerPersistedGrantDbContext,
-                AdminLogDbContext>();
-
-        builder.Services.AddAuditEventLogging<AdminAuditLogDbContext, AuditLog>(builder);
-
-
+        
         builder.Services.AddSharedContexts();
-
+        
         return builder
             .AddErrorHandler<ExceptionToResponseMapper>()
             .AddQueryHandlers()
