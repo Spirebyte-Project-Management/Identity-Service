@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Convey.WebApi.CQRS;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spirebyte.Services.Identity.API.Controllers.Base;
@@ -11,6 +12,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Spirebyte.Services.Identity.API.Controllers;
 
+[Authorize]
 public class UsersController : BaseController
 {
     private readonly IDispatcher _dispatcher;
