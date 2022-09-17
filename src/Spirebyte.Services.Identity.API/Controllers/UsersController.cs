@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Convey.WebApi.CQRS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Services.Identity.API.Controllers.Base;
 using Spirebyte.Services.Identity.Application.Users.DTO;
 using Spirebyte.Services.Identity.Application.Users.Queries;

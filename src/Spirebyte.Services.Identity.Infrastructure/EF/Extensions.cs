@@ -1,7 +1,7 @@
 ﻿using System;
-using Convey;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Skoruba.AuditLogging.EntityFramework.DbContexts;
 using Skoruba.AuditLogging.EntityFramework.Entities;
@@ -20,18 +20,18 @@ namespace Spirebyte.Services.Identity.Infrastructure.EF;
 
 public static class Extensions
 {
-    public static IServiceCollection RegisterDbContexts(this IServiceCollection services, IConveyBuilder builder)
+    public static IServiceCollection RegisterDbContexts(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddDbContexts<AdminIdentityDbContext, IdentityServerConfigurationDbContext,
                 IdentityServerPersistedGrantDbContext, AdminLogDbContext, AdminAuditLogDbContext,
-                IdentityServerDataProtectionDbContext, AuditLog>(builder);
+                IdentityServerDataProtectionDbContext, AuditLog>(configuration);
         return services;
     }
 
     public static void AddDbContexts<TIdentityDbContext, TConfigurationDbContext, TPersistedGrantDbContext,
         TLogDbContext, TAuditLoggingDbContext, TDataProtectionDbContext, TAuditLog>(this IServiceCollection services,
-        IConveyBuilder builder)
+        IConfiguration configuration)
         where TIdentityDbContext : DbContext
         where TPersistedGrantDbContext : DbContext, IAdminPersistedGrantDbContext
         where TConfigurationDbContext : DbContext, IAdminConfigurationDbContext
@@ -40,11 +40,11 @@ public static class Extensions
         where TDataProtectionDbContext : DbContext, IDataProtectionKeyContext
         where TAuditLog : AuditLog
     {
-        var databaseProvider = builder.GetOptions<DatabaseProviderConfiguration>(nameof(DatabaseProviderConfiguration));
+        var databaseProvider = configuration.GetValue<DatabaseProviderConfiguration>(nameof(DatabaseProviderConfiguration));
         var databaseMigrations =
-            builder.GetOptions<DatabaseMigrationsConfiguration>(nameof(DatabaseMigrationsConfiguration)) ??
+            configuration.GetValue<DatabaseMigrationsConfiguration>(nameof(DatabaseMigrationsConfiguration)) ??
             new DatabaseMigrationsConfiguration();
-        var connectionStrings = builder.GetOptions<ConnectionStringsConfiguration>("ConnectionStrings");
+        var connectionStrings = configuration.GetValue<ConnectionStringsConfiguration>("ConnectionStrings");
 
         switch (databaseProvider.ProviderType)
         {
@@ -70,25 +70,5 @@ public static class Extensions
                 throw new ArgumentOutOfRangeException(nameof(databaseProvider.ProviderType),
                     $@"The value needs to be one of {string.Join(", ", Enum.GetNames(typeof(DatabaseProviderType)))}.");
         }
-    }
-
-    public static IServiceCollection AddAuditEventLogging<TAuditLoggingDbContext, TAuditLog>(
-        this IServiceCollection services, IConveyBuilder builder)
-        where TAuditLog : AuditLog, new()
-        where TAuditLoggingDbContext : IAuditLoggingDbContext<TAuditLog>
-    {
-        var auditLoggingConfiguration =
-            builder.GetOptions<AuditLoggingConfiguration>(nameof(AuditLoggingConfiguration));
-        services.AddSingleton(auditLoggingConfiguration);
-
-        services.AddAuditLogging(options => { options.Source = auditLoggingConfiguration.Source; })
-            .AddEventData<ApiAuditSubject, ApiAuditAction>()
-            .AddAuditSinks<DatabaseAuditEventLoggerSink<TAuditLog>>();
-
-        services
-            .AddTransient<IAuditLoggingRepository<TAuditLog>,
-                AuditLoggingRepository<TAuditLoggingDbContext, TAuditLog>>();
-
-        return services;
     }
 }

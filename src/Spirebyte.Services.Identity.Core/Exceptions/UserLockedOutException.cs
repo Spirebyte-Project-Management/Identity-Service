@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Identity.Core.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Identity.Core.Exceptions;
 
@@ -9,5 +9,5 @@ public class UserLockedOutException : DomainException
     {
     }
 
-    public override string Code { get; } = "user_locked_out";
+    public string Code { get; } = "user_locked_out";
 }

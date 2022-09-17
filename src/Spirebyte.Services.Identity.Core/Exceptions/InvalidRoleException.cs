@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Identity.Core.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Identity.Core.Exceptions;
 
@@ -8,5 +8,5 @@ public class InvalidRoleException : DomainException
     {
     }
 
-    public override string Code { get; } = "invalid_role";
+    public string Code { get; } = "invalid_role";
 }

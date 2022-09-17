@@ -1,4 +1,4 @@
-﻿using Convey.WebApi.CQRS;
+﻿using Spirebyte.Framework.Shared.Handlers;
 using Spirebyte.Services.Identity.API.Controllers.Base;
 
 namespace Spirebyte.Services.Identity.API.Controllers;

@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Identity.Core.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Identity.Core.Exceptions;
 
@@ -8,5 +8,5 @@ public class InvalidPasswordException : DomainException
     {
     }
 
-    public override string Code { get; } = "invalid_password";
+    public string Code { get; } = "invalid_password";
 }

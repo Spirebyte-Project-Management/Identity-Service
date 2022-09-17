@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Identity.Core.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Identity.Core.Exceptions;
 
@@ -8,5 +8,5 @@ public class EmptyRefreshTokenException : DomainException
     {
     }
 
-    public override string Code { get; } = "empty_refresh_token";
+    public string Code { get; } = "empty_refresh_token";
 }

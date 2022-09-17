@@ -1,4 +1,4 @@
-﻿using Spirebyte.Services.Identity.Core.Exceptions.Base;
+﻿using Spirebyte.Framework.Shared.Exceptions;
 
 namespace Spirebyte.Services.Identity.Core.Exceptions;
 
@@ -9,6 +9,6 @@ public class EmailInUseException : DomainException
         Email = email;
     }
 
-    public override string Code { get; } = "email_in_use";
+    public string Code { get; } = "email_in_use";
     public string Email { get; }
 }
