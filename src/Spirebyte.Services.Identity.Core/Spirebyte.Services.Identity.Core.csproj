@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Spirebyte.Framework" Version="1.1.6" />
+        <PackageReference Include="Spirebyte.Framework" Version="1.1.14" />
         <PackageReference Include="Skoruba.IdentityServer4.Admin.BusinessLogic.Identity" Version="2.1.0" />
     </ItemGroup>
 
